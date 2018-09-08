@@ -3,47 +3,36 @@
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
-    int size_of_array = 0;
+    int SizeOfArray = 0;
 
     void clear() {
-        for (int i = 0; i < size_of_array; i++) {
-            storage[i] = null;
-        }
-        size_of_array = 0;
+        SizeOfArray = 0;
     }
 
     void save(Resume r) {
-        storage[size_of_array++] = r;
+        storage[SizeOfArray++] = r;
     }
 
     Resume get(String uuid) {
-        Resume r = new Resume();
-        int i = 0;
-        boolean condition = true;
-        do {
+        Resume TmpResume = new Resume();
+        TmpResume = null;
+        for (int i = 0; i < SizeOfArray; i++) {
             if (storage[i].uuid == uuid) {
-                r = storage[i];
-                condition = false;
+                TmpResume = storage[i];
             }
-            i++;
-            if (i >= size_of_array) {
-                condition = false;
-            }
-        } while (condition);
-        return r;
+        }
+        return TmpResume;
     }
 
     void delete(String uuid) {
-        for (int i = 0; i < size_of_array; i++) {
+        for (int i = 0; i < SizeOfArray; i++) {
             if (storage[i].uuid == uuid) {
                 storage[i] = null;
-                if (i < size_of_array - 1) {
-                    for (int j = i + 1; j < size_of_array; j++) {
-                        storage[j - 1] = storage[j];
-                    }
+                if (i < SizeOfArray - 1) {
+                    System.arraycopy(storage, i + 1, storage, i + 1 - 1, SizeOfArray - (i + 1));
                 }
-                storage[size_of_array] = null;
-                size_of_array--;
+                storage[SizeOfArray - 1] = null;
+                SizeOfArray--;
             }
         }
     }
@@ -52,15 +41,13 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] storage_out = new Resume[size_of_array];
+        Resume[] StorageOut = new Resume[SizeOfArray];
 
-        for (int i = 0; i < size_of_array; i++) {
-            storage_out[i] = storage[i];
-        }
-        return storage_out;
+        System.arraycopy(storage, 0, StorageOut, 0, SizeOfArray);
+        return StorageOut;
     }
 
     int size() {
-        return size_of_array;
+        return SizeOfArray;
     }
 }
