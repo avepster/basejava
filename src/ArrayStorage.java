@@ -1,4 +1,4 @@
-import static java.lang.System.*;
+import static java.lang.System.arraycopy;
 
 /**
  * Array based storage for Resumes
@@ -8,6 +8,9 @@ public class ArrayStorage {
     int SizeOfArray = 0;
 
     void clear() {
+        for (int i = 0; i < SizeOfArray; i++) {
+            storage[i] = null;
+        }
         SizeOfArray = 0;
     }
 
@@ -16,25 +19,21 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        Resume ResumeOut = new Resume();
-        ResumeOut = null;
         for (int i = 0; i < SizeOfArray; i++) {
             if (storage[i].uuid == uuid) {
-                ResumeOut = storage[i];
+                return storage[i];
             }
         }
-        return ResumeOut;
+        return null;
     }
 
     void delete(String uuid) {
         for (int i = 0; i < SizeOfArray; i++) {
             if (storage[i].uuid == uuid) {
-                storage[i] = null;
-                if (i < SizeOfArray - 1) {
-                    arraycopy(storage, i + 1, storage, i + 1 - 1, SizeOfArray - (i + 1));
-                }
+                arraycopy(storage, i + 1, storage, i, SizeOfArray - (i + 1));
                 storage[SizeOfArray - 1] = null;
                 SizeOfArray--;
+                break;
             }
         }
     }
