@@ -1,9 +1,14 @@
+package ru.jajawebinar.basejava;
+
+import ru.jajawebinar.basejava.model.Resume;
+import ru.jajawebinar.basejava.storage.ArrayStorage;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Interactive test for ArrayStorage implementation
+ * Interactive test for ru.jajawebinar.basejava.storage.ArrayStorage implementation
  * (just run, no need to understand)
  */
 public class MainArray {

@@ -1,5 +1,10 @@
+package ru.jajawebinar.basejava;
+
+import ru.jajawebinar.basejava.model.Resume;
+import ru.jajawebinar.basejava.storage.ArrayStorage;
+
 /**
- * Test for your ArrayStorage implementation
+ * Test for your ru.jajawebinar.basejava.storage.ArrayStorage implementation
  */
 public class MainTestArrayStorage {
     static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
