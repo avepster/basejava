@@ -1,5 +1,8 @@
 package ru.javawebinar.basejava.storage;
 
+import ru.javawebinar.basejava.exception.ExistStorageException;
+import ru.javawebinar.basejava.exception.NotExistStorageException;
+import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
@@ -16,18 +19,19 @@ public abstract class AbstractArrayStorage implements Storage {
     public void save(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (size == MAX_SIZE) {
-            System.out.println("Storage overflow");
+            throw new StorageException(resume.getUuid(), "Storage overflow");
         } else if (index >= 0) {
-            System.out.println("Cannot save. Resume " + resume.getUuid() + " already exist");
+            throw new ExistStorageException(resume.getUuid());
         } else {
             saveOne(resume, index);
+            size++;
         }
     }
 
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index < 0) {
-            System.out.println("Cannot update. Resume " + resume.getUuid() + " not exist");
+            throw new NotExistStorageException(resume.getUuid());
         } else {
             storage[index] = resume;
         }
@@ -36,9 +40,11 @@ public abstract class AbstractArrayStorage implements Storage {
     public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("Cannot delete. Resume " + uuid + " not exist");
+            throw new NotExistStorageException(uuid);
         } else {
             deleteOne(index);
+            storage[size - 1] = null;
+            size--;
         }
     }
 
@@ -50,8 +56,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public Resume get(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("Cannot get. Resume " + uuid + " not exist");
-            return null;
+            throw new NotExistStorageException(uuid);
         }
         return storage[index];
     }
