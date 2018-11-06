@@ -27,21 +27,21 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveOne(Resume resume) {
+    protected void saveOne(Object index, Resume resume) {
         if (size == MAX_SIZE) {
             throw new StorageException(resume.getUuid(), "Storage overflow");
         }
-        saveOneReal(resume);
+        saveOneReal(index, resume);
         size++;
     }
 
     @Override
-    protected void updateOne(Resume resume) {
-        storage[getIndex(resume.getUuid())] = resume;
+    protected void updateOne(Object index, Resume resume) {
+        storage[(int) index] = resume;
     }
 
     @Override
-    protected void deleteOne(String uuid) {
+    protected void deleteOne(Object index) {
         size--;
     }
 
@@ -52,9 +52,17 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getOne(String uuid) {
-        return storage[getIndex(uuid)];
+    protected Resume getOne(Object index) {
+        return storage[(int) index];
     }
 
-    protected abstract void saveOneReal(Resume resume);
+    @Override
+    protected boolean isExist(Object index) {
+        if ((int) index >= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    protected abstract void saveOneReal(Object index, Resume resume);
 }

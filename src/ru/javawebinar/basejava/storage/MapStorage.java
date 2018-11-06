@@ -25,26 +25,26 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected int getIndex(String uuid) {
+    protected String getIndex(String uuid) {
         if (storage.containsKey(uuid)) {
-            return 0;  // not real index, just uuid exist
+            return uuid;
         }
-        return -1;
+        return null;
     }
 
     @Override
-    protected void saveOne(Resume resume) {
+    protected void saveOne(Object index, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected void updateOne(Resume resume) {
-        storage.replace(resume.getUuid(), resume);
+    protected void updateOne(Object index, Resume resume) {
+        storage.replace((String) index, resume);
     }
 
     @Override
-    protected void deleteOne(String uuid) {
-        storage.remove(uuid);
+    protected void deleteOne(Object index) {
+        storage.remove(index);
     }
 
     @Override
@@ -53,7 +53,15 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getOne(String uuid) {
-        return storage.get(uuid);
+    protected Resume getOne(Object index) {
+        return storage.get(index);
+    }
+
+    @Override
+    protected boolean isExist(Object index) {
+        if (index == null) {
+            return false;
+        }
+        return true;
     }
 }
