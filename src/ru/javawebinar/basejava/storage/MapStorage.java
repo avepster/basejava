@@ -59,9 +59,6 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected boolean isExist(Object index) {
-        if (index == null) {
-            return false;
-        }
-        return true;
+        return (index != null);
     }
 }

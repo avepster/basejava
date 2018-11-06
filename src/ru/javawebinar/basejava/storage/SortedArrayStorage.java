@@ -23,16 +23,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void deleteOne(Object index) {
+    protected void deleteOneReal(Object index) {
         System.arraycopy(storage, (int) index + 1, storage, (int) index, size - (int) index - 1);
-        size--;
-    }
-
-    @Override
-    protected boolean isExist(Object index) {
-        if ((int) index >= 0) {
-            return true;
-        }
-        return false;
     }
 }

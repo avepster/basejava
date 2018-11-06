@@ -42,6 +42,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected void deleteOne(Object index) {
+        deleteOneReal(index);
         size--;
     }
 
@@ -58,11 +59,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected boolean isExist(Object index) {
-        if ((int) index >= 0) {
-            return true;
-        }
-        return false;
+        return ((int) index >= 0);
     }
 
     protected abstract void saveOneReal(Object index, Resume resume);
+
+    protected abstract void deleteOneReal(Object index);
 }

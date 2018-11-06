@@ -23,9 +23,8 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void deleteOne(Object index) {
+    protected void deleteOneReal(Object index) {
         storage[(int) index] = storage[size - 1];
-        size--;
     }
 
 }
