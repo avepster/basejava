@@ -26,10 +26,7 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected String getIndex(String uuid) {
-        if (storage.containsKey(uuid)) {
-            return uuid;
-        }
-        return null;
+        return uuid;
     }
 
     @Override
@@ -48,7 +45,7 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void deleteAll() {
+    public void clear() {
         storage.clear();
     }
 
@@ -59,6 +56,6 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected boolean isExist(Object index) {
-        return (index != null);
+        return storage.containsKey(index);
     }
 }

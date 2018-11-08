@@ -16,14 +16,14 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void saveOneReal(Object index, Resume resume) {
-        int realIndex = -1 * (int) index - 1;
+    protected void saveOneReal(int index, Resume resume) {
+        int realIndex = -1 * index - 1;
         System.arraycopy(storage, realIndex, storage, realIndex + 1, size - realIndex);
         storage[realIndex] = resume;
     }
 
     @Override
-    protected void deleteOneReal(Object index) {
-        System.arraycopy(storage, (int) index + 1, storage, (int) index, size - (int) index - 1);
+    protected void deleteOneReal(int index) {
+        System.arraycopy(storage, index + 1, storage, index, size - index - 1);
     }
 }

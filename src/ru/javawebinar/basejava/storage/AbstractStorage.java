@@ -12,7 +12,7 @@ public abstract class AbstractStorage implements Storage {
     public void save(Resume resume) {
         String uuid = resume.getUuid();
         Object index = getIndex(uuid);
-        if (isExist(index) == true) {
+        if (isExist(index)) {
             throw new ExistStorageException(uuid);
         } else {
             saveOne(index, resume);
@@ -22,7 +22,7 @@ public abstract class AbstractStorage implements Storage {
     public void update(Resume resume) {
         String uuid = resume.getUuid();
         Object index = getIndex(uuid);
-        if (isExist(index) == false) {
+        if (!isExist(index)) {
             throw new NotExistStorageException(uuid);
         }
         updateOne(index, resume);
@@ -30,19 +30,17 @@ public abstract class AbstractStorage implements Storage {
 
     public void delete(String uuid) {
         Object index = getIndex(uuid);
-        if (isExist(index) == false) {
+        if (!isExist(index)) {
             throw new NotExistStorageException(uuid);
         } else {
             deleteOne(index);
         }
     }
 
-    public void clear() {
-        deleteAll();
-    }
+    public abstract void clear();
 
     public Resume get(String uuid) {
-        if (isExist(getIndex(uuid)) == false) {
+        if (!isExist(getIndex(uuid))) {
             throw new NotExistStorageException(uuid);
         }
         return getOne(getIndex(uuid));
@@ -60,8 +58,6 @@ public abstract class AbstractStorage implements Storage {
     protected abstract void updateOne(Object index, Resume resume);
 
     protected abstract void deleteOne(Object index);
-
-    protected abstract void deleteAll();
 
     protected abstract Resume getOne(Object index);
 

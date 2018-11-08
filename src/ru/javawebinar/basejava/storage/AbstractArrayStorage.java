@@ -31,7 +31,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         if (size == MAX_SIZE) {
             throw new StorageException(resume.getUuid(), "Storage overflow");
         }
-        saveOneReal(index, resume);
+        saveOneReal((int) index, resume);
         size++;
     }
 
@@ -42,12 +42,12 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected void deleteOne(Object index) {
-        deleteOneReal(index);
+        deleteOneReal((int) index);
         size--;
     }
 
     @Override
-    protected void deleteAll() {
+    public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
@@ -62,7 +62,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return ((int) index >= 0);
     }
 
-    protected abstract void saveOneReal(Object index, Resume resume);
+    protected abstract void saveOneReal(int index, Resume resume);
 
-    protected abstract void deleteOneReal(Object index);
+    protected abstract void deleteOneReal(int index);
 }
