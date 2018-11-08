@@ -9,7 +9,7 @@ import ru.javawebinar.basejava.model.Resume;
 import static org.junit.Assert.assertEquals;
 
 public class AbstractStorageTest {
-    public Storage storage;
+    protected Storage storage;
 
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
