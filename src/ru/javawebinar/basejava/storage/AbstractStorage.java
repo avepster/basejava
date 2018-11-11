@@ -4,46 +4,45 @@ import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
+import java.util.List;
+
 /**
  * Abstract storage for Resumes
  */
 public abstract class AbstractStorage implements Storage {
 
     public void save(Resume resume) {
-        String uuid = resume.getUuid();
-        Object index = getIndex(uuid);
-        if (isExist(index)) {
-            throw new ExistStorageException(uuid);
-        } else {
-            saveOne(index, resume);
-        }
+        doSave(checkExistAndGetKey(resume.getUuid()), resume);
     }
 
     public void update(Resume resume) {
-        String uuid = resume.getUuid();
-        Object index = getIndex(uuid);
-        if (!isExist(index)) {
-            throw new NotExistStorageException(uuid);
-        }
-        updateOne(index, resume);
+        doUpdate(checkNotExistAndGetKey(resume.getUuid()), resume);
     }
 
     public void delete(String uuid) {
-        Object index = getIndex(uuid);
-        if (!isExist(index)) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            deleteOne(index);
-        }
+        doDelete(checkNotExistAndGetKey(uuid));
     }
 
     public abstract void clear();
 
     public Resume get(String uuid) {
-        if (!isExist(getIndex(uuid))) {
+        return getOne(checkNotExistAndGetKey(uuid));
+    }
+
+    public Object checkExistAndGetKey(String uuid) {
+        Object key = getKey(uuid);
+        if (isExist(key)) {
+            throw new ExistStorageException(uuid);
+        }
+        return key;
+    }
+
+    public Object checkNotExistAndGetKey(String uuid) {
+        Object key = getKey(uuid);
+        if (!isExist(key)) {
             throw new NotExistStorageException(uuid);
         }
-        return getOne(getIndex(uuid));
+        return key;
     }
 
     /**
@@ -51,13 +50,15 @@ public abstract class AbstractStorage implements Storage {
      */
     public abstract Resume[] getAll();
 
-    protected abstract Object getIndex(String uuid);
+    public abstract List<Resume> getAllSorted();
 
-    protected abstract void saveOne(Object index, Resume resume);
+    protected abstract Object getKey(String uuid);
 
-    protected abstract void updateOne(Object index, Resume resume);
+    protected abstract void doSave(Object index, Resume resume);
 
-    protected abstract void deleteOne(Object index);
+    protected abstract void doUpdate(Object index, Resume resume);
+
+    protected abstract void doDelete(Object index);
 
     protected abstract Resume getOne(Object index);
 

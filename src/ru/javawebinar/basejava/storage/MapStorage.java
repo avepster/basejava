@@ -2,6 +2,8 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.Resume;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -24,24 +26,32 @@ public class MapStorage extends AbstractStorage {
         return storage.values().toArray(new Resume[0]);
     }
 
+    /**
+     * @return List, contains only Resumes in storage (without null)
+     */
     @Override
-    protected String getIndex(String uuid) {
+    public List<Resume> getAllSorted() {
+        return new ArrayList<Resume>(storage.values());
+    }
+
+    @Override
+    protected String getKey(String uuid) {
         return uuid;
     }
 
     @Override
-    protected void saveOne(Object index, Resume resume) {
+    protected void doSave(Object key, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected void updateOne(Object index, Resume resume) {
-        storage.replace((String) index, resume);
+    protected void doUpdate(Object key, Resume resume) {
+        storage.replace((String) key, resume);
     }
 
     @Override
-    protected void deleteOne(Object index) {
-        storage.remove(index);
+    protected void doDelete(Object key) {
+        storage.remove(key);
     }
 
     @Override
@@ -50,12 +60,12 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getOne(Object index) {
-        return storage.get(index);
+    protected Resume getOne(Object key) {
+        return storage.get(key);
     }
 
     @Override
-    protected boolean isExist(Object index) {
-        return storage.containsKey(index);
+    protected boolean isExist(Object key) {
+        return storage.containsKey(key);
     }
 }

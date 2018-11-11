@@ -4,6 +4,7 @@ import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Array based storage for Resumes
@@ -26,23 +27,31 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
+    /**
+     * @return List, contains only Resumes in storage (without null)
+     */
     @Override
-    protected void saveOne(Object index, Resume resume) {
+    public List<Resume> getAllSorted() {
+        return Arrays.asList(storage);
+    }
+
+    @Override
+    protected void doSave(Object index, Resume resume) {
         if (size == MAX_SIZE) {
             throw new StorageException(resume.getUuid(), "Storage overflow");
         }
-        saveOneReal((int) index, resume);
+        saveOne((int) index, resume);
         size++;
     }
 
     @Override
-    protected void updateOne(Object index, Resume resume) {
+    protected void doUpdate(Object index, Resume resume) {
         storage[(int) index] = resume;
     }
 
     @Override
-    protected void deleteOne(Object index) {
-        deleteOneReal((int) index);
+    protected void doDelete(Object index) {
+        deleteOne((int) index);
         size--;
     }
 
@@ -62,7 +71,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return ((int) index >= 0);
     }
 
-    protected abstract void saveOneReal(int index, Resume resume);
+    protected abstract Integer getKey(String uuid);
 
-    protected abstract void deleteOneReal(int index);
+    protected abstract void saveOne(int index, Resume resume);
+
+    protected abstract void deleteOne(int index);
 }
