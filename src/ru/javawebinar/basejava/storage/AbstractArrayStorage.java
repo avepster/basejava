@@ -3,14 +3,18 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Arrays.fill;
 
 /**
  * Array based storage for Resumes
  */
 public abstract class AbstractArrayStorage extends AbstractStorage {
-    protected static final int MAX_SIZE = 10000;
+    static final int MAX_SIZE = 10000;
+//    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getUuid);
 
     protected Resume[] storage = new Resume[MAX_SIZE];
     protected int size = 0;
@@ -20,20 +24,19 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    @Override
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
-    }
-
-    /**
      * @return List, contains only Resumes in storage (without null)
      */
-    @Override
-    public List<Resume> getAllSorted() {
-        return Arrays.asList(storage);
-    }
+    public List<Resume> getAllSorted(){
+//        Set<Resume> mySet = new HashSet<Resume>(Arrays.asList(storage));
+//        List<Resume> myList = new ArrayList<Resume>();
+//        myList.addAll(mySet);
+//        myList.removeAll(Collections.singleton(null));
+        Resume[] shortStorage = new Resume[size];
+        System.arraycopy(storage, 0, shortStorage, 0, size);
+        List<Resume> myList = new ArrayList<Resume>(Arrays.asList(shortStorage));
+        myList.sort(RESUME_COMPARATOR);
+        return myList;
+    };
 
     @Override
     protected void doSave(Object index, Resume resume) {
@@ -57,7 +60,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     public void clear() {
-        Arrays.fill(storage, 0, size, null);
+        fill(storage, 0, size, null);
         size = 0;
     }
 
@@ -71,7 +74,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return ((int) index >= 0);
     }
 
-    protected abstract Integer getKey(String uuid);
+    protected abstract Integer getKey(Object uuid);
 
     protected abstract void saveOne(int index, Resume resume);
 

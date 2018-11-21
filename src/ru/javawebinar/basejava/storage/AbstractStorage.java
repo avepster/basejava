@@ -4,12 +4,20 @@ import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Abstract storage for Resumes
  */
 public abstract class AbstractStorage implements Storage {
+
+    static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> {
+        if (o1.getFullName() != o2.getFullName()) {
+            return o1.getFullName().compareTo(o2.getFullName());
+        }
+        return o1.getUuid().compareTo(o2.getUuid());
+    };
 
     public void save(Resume resume) {
         doSave(checkExistAndGetKey(resume.getUuid()), resume);
@@ -29,7 +37,7 @@ public abstract class AbstractStorage implements Storage {
         return getOne(checkNotExistAndGetKey(uuid));
     }
 
-    public Object checkExistAndGetKey(String uuid) {
+    private Object checkExistAndGetKey(String uuid) {
         Object key = getKey(uuid);
         if (isExist(key)) {
             throw new ExistStorageException(uuid);
@@ -37,7 +45,7 @@ public abstract class AbstractStorage implements Storage {
         return key;
     }
 
-    public Object checkNotExistAndGetKey(String uuid) {
+    private Object checkNotExistAndGetKey(String uuid) {
         Object key = getKey(uuid);
         if (!isExist(key)) {
             throw new NotExistStorageException(uuid);
@@ -46,21 +54,19 @@ public abstract class AbstractStorage implements Storage {
     }
 
     /**
-     * @return array, contains only Resumes in storage (without null)
+     * @return List, contains only Resumes in storage (without null)
      */
-    public abstract Resume[] getAll();
-
     public abstract List<Resume> getAllSorted();
 
-    protected abstract Object getKey(String uuid);
+    protected abstract Object getKey(Object uuid);
 
-    protected abstract void doSave(Object index, Resume resume);
+    protected abstract void doSave(Object key, Resume resume);
 
-    protected abstract void doUpdate(Object index, Resume resume);
+    protected abstract void doUpdate(Object key, Resume resume);
 
-    protected abstract void doDelete(Object index);
+    protected abstract void doDelete(Object key);
 
-    protected abstract Resume getOne(Object index);
+    protected abstract Resume getOne(Object key);
 
-    protected abstract boolean isExist(Object index);
+    protected abstract boolean isExist(Object key);
 }

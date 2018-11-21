@@ -18,23 +18,16 @@ public class ListStorage extends AbstractStorage {
     }
 
     /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    @Override
-    public Resume[] getAll() {
-        return storage.toArray(new Resume[0]);
-    }
-
-    /**
      * @return List, contains only Resumes in storage (without null)
      */
     @Override
     public List<Resume> getAllSorted() {
+        storage.sort(RESUME_COMPARATOR);
         return storage;
     }
 
     @Override
-    protected Integer getKey(String uuid) {
+    protected Integer getKey(Object uuid) {
         for (int i = 0; i < size(); i++) {
             if (Objects.equals(storage.get(i).getUuid(), uuid)) {
                 return i;
