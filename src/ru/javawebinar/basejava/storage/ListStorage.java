@@ -17,17 +17,13 @@ public class ListStorage extends AbstractStorage {
         return storage.size();
     }
 
-    /**
-     * @return List, contains only Resumes in storage (without null)
-     */
     @Override
-    public List<Resume> getAllSorted() {
-        storage.sort(RESUME_COMPARATOR);
+    public List<Resume> getAll() {
         return storage;
     }
 
     @Override
-    protected Integer getKey(Object uuid) {
+    protected Integer getKey(String uuid) {
         for (int i = 0; i < size(); i++) {
             if (Objects.equals(storage.get(i).getUuid(), uuid)) {
                 return i;

@@ -22,21 +22,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return size;
     }
 
-    /**
-     * @return List, contains only Resumes in storage (without null)
-     */
-    public List<Resume> getAllSorted() {
-//        Set<Resume> mySet = new HashSet<Resume>(Arrays.asList(storage));
-//        List<Resume> myList = new ArrayList<Resume>();
-//        myList.addAll(mySet);
-//        myList.removeAll(Collections.singleton(null));
-        Resume[] shortStorage = new Resume[size];
-        System.arraycopy(storage, 0, shortStorage, 0, size);
-        List<Resume> myList = new ArrayList<>(Arrays.asList(shortStorage));
-        myList.sort(RESUME_COMPARATOR);
-        return myList;
-    }
-
     @Override
     protected void doSave(Object index, Resume resume) {
         if (size == MAX_SIZE) {
@@ -69,11 +54,18 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
+    protected List<Resume> getAll() {
+        Resume[] shortStorage = new Resume[size];
+        System.arraycopy(storage, 0, shortStorage, 0, size);
+        return new ArrayList<>(Arrays.asList(shortStorage));
+    }
+
+    @Override
     protected boolean isExist(Object index) {
         return ((int) index >= 0);
     }
 
-    protected abstract Integer getKey(Object uuid);
+    protected abstract Integer getKey(String uuid);
 
     protected abstract void saveOne(int index, Resume resume);
 
