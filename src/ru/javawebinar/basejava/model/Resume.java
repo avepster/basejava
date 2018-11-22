@@ -16,11 +16,6 @@ public class Resume {
         this.fullName = fullName;
     }
 
-    public Resume() {
-        this.uuid = UUID.randomUUID().toString();
-        this.fullName = "Anonymous";
-    }
-
     public Resume(String uuid, String fullName) {
         this.uuid = uuid;
         this.fullName = fullName;

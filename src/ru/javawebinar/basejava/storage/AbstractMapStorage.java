@@ -5,7 +5,7 @@ import ru.javawebinar.basejava.model.Resume;
 import java.util.*;
 
 public abstract class AbstractMapStorage extends AbstractStorage {
-    protected Map<Object, Resume> storage = new TreeMap<>();
+    protected Map<Object, Resume> storage = new HashMap<>();
 
     protected abstract Object getKey(Object uuid);
 
@@ -19,7 +19,7 @@ public abstract class AbstractMapStorage extends AbstractStorage {
      */
     @Override
     public List<Resume> getAllSorted() {
-        List<Resume> sortedList = new ArrayList<Resume>(storage.values());
+        List<Resume> sortedList = new ArrayList<>(storage.values());
         sortedList.sort(RESUME_COMPARATOR);
         return sortedList;
     }

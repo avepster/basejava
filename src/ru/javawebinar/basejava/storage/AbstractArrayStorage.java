@@ -14,7 +14,6 @@ import static java.util.Arrays.fill;
  */
 public abstract class AbstractArrayStorage extends AbstractStorage {
     static final int MAX_SIZE = 10000;
-//    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getUuid);
 
     protected Resume[] storage = new Resume[MAX_SIZE];
     protected int size = 0;
@@ -26,17 +25,17 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     /**
      * @return List, contains only Resumes in storage (without null)
      */
-    public List<Resume> getAllSorted(){
+    public List<Resume> getAllSorted() {
 //        Set<Resume> mySet = new HashSet<Resume>(Arrays.asList(storage));
 //        List<Resume> myList = new ArrayList<Resume>();
 //        myList.addAll(mySet);
 //        myList.removeAll(Collections.singleton(null));
         Resume[] shortStorage = new Resume[size];
         System.arraycopy(storage, 0, shortStorage, 0, size);
-        List<Resume> myList = new ArrayList<Resume>(Arrays.asList(shortStorage));
+        List<Resume> myList = new ArrayList<>(Arrays.asList(shortStorage));
         myList.sort(RESUME_COMPARATOR);
         return myList;
-    };
+    }
 
     @Override
     protected void doSave(Object index, Resume resume) {
