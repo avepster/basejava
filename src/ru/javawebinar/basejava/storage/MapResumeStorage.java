@@ -11,15 +11,11 @@ import java.util.Map;
  * Map based storage for Resumes
  */
 public class MapResumeStorage extends AbstractStorage {
-    protected Map<Object, Resume> storage = new HashMap<>();
+    protected Map<String, Resume> storage = new HashMap<>();
 
     @Override
     protected Resume getKey(String uuid) {
-        Resume key = storage.get(uuid);
-        if (key != null) {
-            return key;
-        }
-        return new Resume(uuid, "Anonymous");
+        return storage.get(uuid);
     }
 
     @Override
@@ -34,17 +30,17 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected void doSave(Object key, Resume resume) {
-        storage.put(key, resume);
+        storage.put(resume.getUuid(), resume);
     }
 
     @Override
     protected void doUpdate(Object key, Resume resume) {
-        storage.replace(key, resume);
+        storage.replace(resume.getUuid(), resume);
     }
 
     @Override
     protected void doDelete(Object key) {
-        storage.remove(key);
+        storage.remove(((Resume) key).getUuid());
     }
 
     @Override
@@ -54,11 +50,11 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected Resume getOne(Object key) {
-        return storage.get(key);
+        return (Resume) key;
     }
 
     @Override
     protected boolean isExist(Object key) {
-        return storage.containsKey(key);
+        return key != null;
     }
 }
