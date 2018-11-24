@@ -109,10 +109,7 @@ public class AbstractStorageTest {
         expected.add(RESUME_1);
         expected.add(RESUME_2);
         expected.sort(RESUME_COMPARATOR);
-        if (!expected.equals(storage.getAllSorted())) {
-            System.out.println("Storages not equals");
-        }
-        //assertArrayEquals("Storages not equals", expected, storage.getAllSorted());
+        assertEquals("Storages not equals", expected, storage.getAllSorted());
     }
 
     @Test
