@@ -10,7 +10,7 @@ import java.util.TreeMap;
 /**
  * Map based storage for Resumes
  */
-public class MapUuidStorage extends AbstractStorage {
+public class MapUuidStorage extends AbstractStorage<String> {
     protected Map<String, Resume> storage = new TreeMap<>();
 
     @Override
@@ -29,17 +29,17 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Object key, Resume resume) {
-        storage.put((String) key, resume);
+    protected void doSave(String key, Resume resume) {
+        storage.put(key, resume);
     }
 
     @Override
-    protected void doUpdate(Object key, Resume resume) {
-        storage.replace((String) key, resume);
+    protected void doUpdate(String key, Resume resume) {
+        storage.replace(key, resume);
     }
 
     @Override
-    protected void doDelete(Object key) {
+    protected void doDelete(String key) {
         storage.remove(key);
     }
 
@@ -49,12 +49,12 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getOne(Object key) {
+    protected Resume getOne(String key) {
         return storage.get(key);
     }
 
     @Override
-    protected boolean isExist(Object key) {
+    protected boolean isExist(String key) {
         return storage.containsKey(key);
     }
 }

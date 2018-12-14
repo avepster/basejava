@@ -12,7 +12,7 @@ import static java.util.Arrays.fill;
 /**
  * Array based storage for Resumes
  */
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     static final int MAX_SIZE = 10000;
 
     protected Resume[] storage = new Resume[MAX_SIZE];
@@ -23,22 +23,22 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Object index, Resume resume) {
+    protected void doSave(Integer index, Resume resume) {
         if (size == MAX_SIZE) {
             throw new StorageException(resume.getUuid(), "Storage overflow");
         }
-        saveOne((int) index, resume);
+        saveOne(index, resume);
         size++;
     }
 
     @Override
-    protected void doUpdate(Object index, Resume resume) {
-        storage[(int) index] = resume;
+    protected void doUpdate(Integer index, Resume resume) {
+        storage[index] = resume;
     }
 
     @Override
-    protected void doDelete(Object index) {
-        deleteOne((int) index);
+    protected void doDelete(Integer index) {
+        deleteOne(index);
         size--;
     }
 
@@ -49,8 +49,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getOne(Object index) {
-        return storage[(int) index];
+    protected Resume getOne(Integer index) {
+        return storage[index];
     }
 
     @Override
@@ -59,13 +59,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object index) {
-        return ((int) index >= 0);
+    protected boolean isExist(Integer index) {
+        return index >= 0;
     }
 
     protected abstract Integer getKey(String uuid);
 
-    protected abstract void saveOne(int index, Resume resume);
+    protected abstract void saveOne(Integer index, Resume resume);
 
-    protected abstract void deleteOne(int index);
+    protected abstract void deleteOne(Integer index);
 }

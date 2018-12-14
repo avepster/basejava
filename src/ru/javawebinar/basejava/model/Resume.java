@@ -1,5 +1,7 @@
 package ru.javawebinar.basejava.model;
 
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -10,6 +12,8 @@ public class Resume {
     // Unique identifier
     private final String uuid;
     private String fullName;
+    public Map<ContactType, String> contacts = new TreeMap<>();
+    public Map<SectionType, AbstractSection> content = new TreeMap<>();
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -32,6 +36,30 @@ public class Resume {
         this.fullName = fullName;
     }
 
+    public String getContact(ContactType type) {
+        return contacts.get(type);
+    }
+
+    public void addContact(ContactType type, String contact) {
+        this.contacts.put(type, contact);
+    }
+
+    public void updateContact(ContactType type, String contact) {
+        this.contacts.replace(type, contact);
+    }
+
+    public AbstractSection getSection(SectionType type) {
+        return this.content.get(type);
+    }
+
+    public void addSection(SectionType type, AbstractSection section) {
+        this.content.put(type, section);
+    }
+
+    public void updateSection(SectionType type, AbstractSection section) {
+        this.content.replace(type, section);
+    }
+
     @Override
     public String toString() {
         return uuid;
@@ -45,13 +73,17 @@ public class Resume {
         Resume resume = (Resume) o;
 
         if (!uuid.equals(resume.uuid)) return false;
-        return fullName.equals(resume.fullName);
+        if (!fullName.equals(resume.fullName)) return false;
+        if (contacts != null ? !contacts.equals(resume.contacts) : resume.contacts != null) return false;
+        return content != null ? content.equals(resume.content) : resume.content == null;
     }
 
     @Override
     public int hashCode() {
         int result = uuid.hashCode();
         result = 31 * result + fullName.hashCode();
+        result = 31 * result + (contacts != null ? contacts.hashCode() : 0);
+        result = 31 * result + (content != null ? content.hashCode() : 0);
         return result;
     }
 }
