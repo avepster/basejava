@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListWithHeaderAndPeriodSection extends AbstractSection {
-    List<HeaderAndPeriodData> complexList = new ArrayList<>();
+    List<HeaderAndPeriodData> list = new ArrayList<>();
 
-    public List<HeaderAndPeriodData> getComplexList() {
-        return complexList;
+    public List<HeaderAndPeriodData> getHeaderAndPeriodList() {
+        return list;
     }
 
-    public void setComplexList(List<HeaderAndPeriodData> complexList) {
-        this.complexList = complexList;
+    public void setHeaderAndPeriodList(List<HeaderAndPeriodData> list) {
+        this.list = list;
     }
 }

@@ -2,6 +2,7 @@ package ru.javawebinar.basejava;
 
 import ru.javawebinar.basejava.model.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,14 +62,36 @@ public class ResumeTestData {
         HeaderAndPeriodData data = new HeaderAndPeriodData();
         data.setHeader("Java Online Projects");
         data.setLink("http://javaops.ru/");
-        data.setDateBegin("01.10.2013");
-        data.setDateEnd();
-        data.setText();
-        hapList.add()
+        data.setDateBegin(LocalDate.of(2013, 10, 1));
+        data.setDateEnd(LocalDate.now());
+        data.setText("Автор проекта.\n" + "Создание, организация и проведение Java онлайн проектов и стажировок.");
+        hapList.add(data);
 
+        data.setHeader("Wrike");
+        data.setLink("https://www.wrike.com/");
+        data.setDateBegin(LocalDate.of(2014, 10, 1));
+        data.setDateEnd(LocalDate.of(2016, 1, 1));
+        data.setText("Старший разработчик (backend)\n" + "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.");
+        hapList.add(data);
 
+        periodList.setHeaderAndPeriodList(hapList);
+        resume.addSection(EXPERIENCE, listSection);
 
+        data.setHeader("Coursera");
+        data.setLink("https://www.coursera.org/course/progfun");
+        data.setDateBegin(LocalDate.of(2013, 3, 1));
+        data.setDateEnd(LocalDate.of(2013, 5, 1));
+        data.setText("\"Functional Programming Principles in Scala\" by Martin Odersky");
+        hapList.add(data);
+        data.setHeader("Luxoft");
+        data.setLink("https://www.coursera.org/course/progfun");
+        data.setDateBegin(LocalDate.of(2011, 3, 1));
+        data.setDateEnd(LocalDate.of(2011, 4, 1));
+        data.setText("Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"");
+        hapList.add(data);
 
+        periodList.setHeaderAndPeriodList(hapList);
+        resume.addSection(EXPERIENCE, listSection);
 
         AbstractSection section;
         for (SectionType type : resume.content.keySet()) {
