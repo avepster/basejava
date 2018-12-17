@@ -1,7 +1,7 @@
 package ru.javawebinar.basejava.model;
 
+import java.util.EnumMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -12,8 +12,8 @@ public class Resume {
     // Unique identifier
     private final String uuid;
     private String fullName;
-    public Map<ContactType, String> contacts = new TreeMap<>();
-    public Map<SectionType, AbstractSection> content = new TreeMap<>();
+    public Map<ContactType, String> contacts = new EnumMap(ContactType.class);
+    public Map<SectionType, AbstractSection> content = new EnumMap(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);

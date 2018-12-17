@@ -2,12 +2,12 @@ package ru.javawebinar.basejava.model;
 
 import java.time.LocalDate;
 
-public class HeaderAndPeriodData {
-    String header;
-    String link;
-    LocalDate dateBegin;
-    LocalDate dateEnd;
-    String text;
+public class Position {
+    private String header;
+    private String link;
+    private LocalDate dateBegin;
+    private LocalDate dateEnd;
+    private String text;
 
     public String getHeader() {
         return header;
@@ -46,6 +46,14 @@ public class HeaderAndPeriodData {
     }
 
     public void setText(String text) {
+        this.text = text;
+    }
+
+    public Position(String header, String link, LocalDate dateBegin, LocalDate dateEnd, String text) {
+        this.header = header;
+        this.link = link;
+        this.dateBegin = dateBegin;
+        this.dateEnd = dateEnd;
         this.text = text;
     }
 }

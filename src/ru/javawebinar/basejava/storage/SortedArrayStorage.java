@@ -28,14 +28,14 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     private static final Comparator<Resume> RESUME_COMPARATOR_UUID = Comparator.comparing(Resume::getUuid);
 
     @Override
-    protected Integer getKey(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         Resume searchKey = new Resume(uuid, "Anonimous");
         return Arrays.binarySearch(storage, 0, size, searchKey, RESUME_COMPARATOR_UUID);
     }
 
     @Override
     protected void saveOne(Integer index, Resume resume) {
-        int realIndex = -1 * index - 1;
+        int realIndex = -index - 1;
         System.arraycopy(storage, realIndex, storage, realIndex + 1, size - realIndex);
         storage[realIndex] = resume;
     }

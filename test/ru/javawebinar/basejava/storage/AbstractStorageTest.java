@@ -6,7 +6,7 @@ import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -17,10 +17,6 @@ public class AbstractStorageTest {
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
-    private static final String FULLNAME_1 = "Иванов Иван Иванович";
-    private static final String FULLNAME_2 = "Сидоров Тимофей Николаевич";
-    private static final String FULLNAME_3 = "Петров Петр Петрович";
-    private static final String FULLNAME_4 = "Никифоров Андрей Андреевич";
     private static final Resume RESUME_1; // = new Resume(UUID_1); non static block initialization
     private static final Resume RESUME_2;
     private static final Resume RESUME_3;
@@ -28,10 +24,10 @@ public class AbstractStorageTest {
 
     // Static block initialization (if some hard init)
     static {
-        RESUME_1 = new Resume(UUID_1, FULLNAME_1);
-        RESUME_2 = new Resume(UUID_2, FULLNAME_2);
-        RESUME_3 = new Resume(UUID_3, FULLNAME_3);
-        RESUME_4 = new Resume(UUID_4, FULLNAME_4);
+        RESUME_1 = new Resume(UUID_1, "Иванов Иван Иванович");
+        RESUME_2 = new Resume(UUID_2, "Сидоров Тимофей Николаевич");
+        RESUME_3 = new Resume(UUID_3, "Петров Петр Петрович");
+        RESUME_4 = new Resume(UUID_4, "Никифоров Андрей Андреевич");
     }
 
     protected Storage storage;
@@ -62,7 +58,7 @@ public class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume resume = new Resume(UUID_1, FULLNAME_1);
+        Resume resume = new Resume(UUID_1, "Новиков Николай Николаевич");
         storage.update(resume);
         assertGet(resume);
     }
@@ -104,12 +100,9 @@ public class AbstractStorageTest {
 
     @Test
     public void getAllSorted() {
-        List<Resume> expected = new ArrayList<>();
-        expected.add(RESUME_3);
-        expected.add(RESUME_1);
-        expected.add(RESUME_2);
-        expected.sort(RESUME_COMPARATOR);
-        assertEquals("Storages not equals", expected, storage.getAllSorted());
+        List<Resume> expectedResume = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
+        expectedResume.sort(RESUME_COMPARATOR);
+        assertEquals(expectedResume, storage.getAllSorted());
     }
 
     @Test

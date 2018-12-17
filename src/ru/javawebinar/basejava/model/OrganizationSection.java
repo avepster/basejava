@@ -2,10 +2,10 @@ package ru.javawebinar.basejava.model;
 
 import java.util.List;
 
-public class ListSection extends AbstractSection {
-    private List<String> list;
+public class OrganizationSection extends AbstractSection {
+    List<Position> list;
 
-    public List<String> getList() {
+    public List<Position> getOrganizationList() {
         return list;
     }
 
@@ -14,7 +14,7 @@ public class ListSection extends AbstractSection {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ListSection that = (ListSection) o;
+        OrganizationSection that = (OrganizationSection) o;
 
         return list != null ? list.equals(that.list) : that.list == null;
     }
@@ -24,8 +24,7 @@ public class ListSection extends AbstractSection {
         return list != null ? list.hashCode() : 0;
     }
 
-    public ListSection(List<String> list) {
+    public OrganizationSection(List<Position> list) {
         this.list = list;
     }
-
 }
