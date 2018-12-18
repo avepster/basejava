@@ -9,6 +9,14 @@ public class Position {
     private LocalDate dateEnd;
     private String text;
 
+    public Position(String header, String link, LocalDate dateBegin, LocalDate dateEnd, String text) {
+        this.header = header;
+        this.link = link;
+        this.dateBegin = dateBegin;
+        this.dateEnd = dateEnd;
+        this.text = text;
+    }
+
     public String getHeader() {
         return header;
     }
@@ -49,11 +57,27 @@ public class Position {
         this.text = text;
     }
 
-    public Position(String header, String link, LocalDate dateBegin, LocalDate dateEnd, String text) {
-        this.header = header;
-        this.link = link;
-        this.dateBegin = dateBegin;
-        this.dateEnd = dateEnd;
-        this.text = text;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Position position = (Position) o;
+
+        if (!header.equals(position.header)) return false;
+        if (link != null ? !link.equals(position.link) : position.link != null) return false;
+        if (!dateBegin.equals(position.dateBegin)) return false;
+        if (!dateEnd.equals(position.dateEnd)) return false;
+        return text != null ? text.equals(position.text) : position.text == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = header.hashCode();
+        result = 31 * result + (link != null ? link.hashCode() : 0);
+        result = 31 * result + dateBegin.hashCode();
+        result = 31 * result + dateEnd.hashCode();
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        return result;
     }
 }

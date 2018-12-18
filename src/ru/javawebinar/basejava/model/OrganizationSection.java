@@ -3,7 +3,11 @@ package ru.javawebinar.basejava.model;
 import java.util.List;
 
 public class OrganizationSection extends AbstractSection {
-    List<Position> list;
+    private List<Position> list;
+
+    public OrganizationSection(List<Position> list) {
+        this.list = list;
+    }
 
     public List<Position> getOrganizationList() {
         return list;
@@ -22,9 +26,5 @@ public class OrganizationSection extends AbstractSection {
     @Override
     public int hashCode() {
         return list != null ? list.hashCode() : 0;
-    }
-
-    public OrganizationSection(List<Position> list) {
-        this.list = list;
     }
 }

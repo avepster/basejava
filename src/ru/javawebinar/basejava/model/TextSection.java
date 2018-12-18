@@ -3,6 +3,10 @@ package ru.javawebinar.basejava.model;
 public class TextSection extends AbstractSection {
     private String text;
 
+    public TextSection(String text) {
+        this.text = text;
+    }
+
     public String getText() {
         return text;
     }
@@ -20,9 +24,5 @@ public class TextSection extends AbstractSection {
     @Override
     public int hashCode() {
         return text != null ? text.hashCode() : 0;
-    }
-
-    public TextSection(String text) {
-        this.text = text;
     }
 }

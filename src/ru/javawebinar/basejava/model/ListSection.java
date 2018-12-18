@@ -5,6 +5,10 @@ import java.util.List;
 public class ListSection extends AbstractSection {
     private List<String> list;
 
+    public ListSection(List<String> list) {
+        this.list = list;
+    }
+
     public List<String> getList() {
         return list;
     }
@@ -23,9 +27,4 @@ public class ListSection extends AbstractSection {
     public int hashCode() {
         return list != null ? list.hashCode() : 0;
     }
-
-    public ListSection(List<String> list) {
-        this.list = list;
-    }
-
 }
