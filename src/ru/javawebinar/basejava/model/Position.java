@@ -1,60 +1,38 @@
 package ru.javawebinar.basejava.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Position {
-    private String header;
-    private String link;
-    private LocalDate dateBegin;
-    private LocalDate dateEnd;
-    private String text;
+    private final LocalDate dateBegin;
+    private final LocalDate dateEnd;
+    private final String title;
+    private final String description;
 
-    public Position(String header, String link, LocalDate dateBegin, LocalDate dateEnd, String text) {
-        this.header = header;
-        this.link = link;
+    public Position(LocalDate dateBegin, LocalDate dateEnd, String title, String description) {
+        Objects.requireNonNull(dateBegin, "dateBegin must not be null");
+        Objects.requireNonNull(dateEnd, "dateEnd must not be null");
+        Objects.requireNonNull(title, "title must not be null");
         this.dateBegin = dateBegin;
         this.dateEnd = dateEnd;
-        this.text = text;
-    }
-
-    public String getHeader() {
-        return header;
-    }
-
-    public void setHeader(String header) {
-        this.header = header;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
+        this.title = title;
+        this.description = description;
     }
 
     public LocalDate getDateBegin() {
         return dateBegin;
     }
 
-    public void setDateBegin(LocalDate dateBegin) {
-        this.dateBegin = dateBegin;
-    }
-
     public LocalDate getDateEnd() {
         return dateEnd;
     }
 
-    public void setDateEnd(LocalDate dateEnd) {
-        this.dateEnd = dateEnd;
+    public String getTitle() {
+        return title;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -64,20 +42,18 @@ public class Position {
 
         Position position = (Position) o;
 
-        if (!header.equals(position.header)) return false;
-        if (link != null ? !link.equals(position.link) : position.link != null) return false;
         if (!dateBegin.equals(position.dateBegin)) return false;
         if (!dateEnd.equals(position.dateEnd)) return false;
-        return text != null ? text.equals(position.text) : position.text == null;
+        if (!title.equals(position.title)) return false;
+        return description != null ? description.equals(position.description) : position.description == null;
     }
 
     @Override
     public int hashCode() {
-        int result = header.hashCode();
-        result = 31 * result + (link != null ? link.hashCode() : 0);
-        result = 31 * result + dateBegin.hashCode();
+        int result = dateBegin.hashCode();
         result = 31 * result + dateEnd.hashCode();
-        result = 31 * result + (text != null ? text.hashCode() : 0);
+        result = 31 * result + title.hashCode();
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 }

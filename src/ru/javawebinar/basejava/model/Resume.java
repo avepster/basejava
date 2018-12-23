@@ -2,6 +2,7 @@ package ru.javawebinar.basejava.model;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -13,13 +14,15 @@ public class Resume {
     private final String uuid;
     private String fullName;
     public Map<ContactType, String> contacts = new EnumMap(ContactType.class);
-    public Map<SectionType, AbstractSection> content = new EnumMap(SectionType.class);
+    public Map<SectionType, AbstractSection> sections = new EnumMap(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
     }
 
     public Resume(String uuid, String fullName) {
+        Objects.requireNonNull(uuid, "uuid must not be null");
+        Objects.requireNonNull(fullName, "uuid must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
     }
@@ -49,15 +52,15 @@ public class Resume {
     }
 
     public AbstractSection getSection(SectionType type) {
-        return this.content.get(type);
+        return sections.get(type);
     }
 
     public void addSection(SectionType type, AbstractSection section) {
-        this.content.put(type, section);
+        this.sections.put(type, section);
     }
 
     public void updateSection(SectionType type, AbstractSection section) {
-        this.content.replace(type, section);
+        this.sections.replace(type, section);
     }
 
     @Override
@@ -75,7 +78,7 @@ public class Resume {
         if (!uuid.equals(resume.uuid)) return false;
         if (!fullName.equals(resume.fullName)) return false;
         if (contacts != null ? !contacts.equals(resume.contacts) : resume.contacts != null) return false;
-        return content != null ? content.equals(resume.content) : resume.content == null;
+        return sections != null ? sections.equals(resume.sections) : resume.sections == null;
     }
 
     @Override
@@ -83,7 +86,7 @@ public class Resume {
         int result = uuid.hashCode();
         result = 31 * result + fullName.hashCode();
         result = 31 * result + (contacts != null ? contacts.hashCode() : 0);
-        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (sections != null ? sections.hashCode() : 0);
         return result;
     }
 }

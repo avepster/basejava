@@ -16,14 +16,10 @@ public class ResumeTestData {
         resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
         resume.addContact(ContactType.SKYPE, "grigory.kislin");
         resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
-        resume.addContact(ContactType.PROFILE_LINKEDIN, "https://www.linkedin.com/in/gkislin");
-        resume.addContact(ContactType.PROFILE_GITHUB, "https://github.com/gkislin");
-        resume.addContact(ContactType.PROFILE_STACKOVERFLOW, "https://stackoverflow.com/users/548473");
+        resume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        resume.addContact(ContactType.GITHUB, "https://github.com/gkislin");
+        resume.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
         resume.addContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
-
-        for (ContactType type : resume.contacts.keySet()) {
-            System.out.println(type.getTitle() + ": " + resume.getContact(type));
-        }
 
         resume.addSection(PERSONAL, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         resume.addSection(OBJECTIVE, new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
@@ -49,24 +45,40 @@ public class ResumeTestData {
                 "Отличное знание и опыт применения концепций ООП, SOA, шаблонов проектрирования, архитектурных шаблонов, UML, функционального программирования",
                 "Родной русский, английский \"upper intermediate\"")));
 
-        List<Position> experienceList = new ArrayList();
-        experienceList.add(new Position("Java Online Projects", "http://javaops.ru/", LocalDate.of(2013, 10, 1), LocalDate.now(),
-                "Автор проекта.\n" + "Создание, организация и проведение Java онлайн проектов и стажировок."));
+        List<Organization> experienceList = new ArrayList<>();
+        ArrayList<Position> position1 = new ArrayList<>();
+        position1.add(new Position(LocalDate.of(2013, 10, 1), LocalDate.now(), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок."));
+        experienceList.add(new Organization("Java Online Projects", "http://javaops.ru/", position1));
 
-        experienceList.add(new Position("Wrike", "https://www.wrike.com/", LocalDate.of(2014, 10, 1), LocalDate.of(2016, 1, 1),
-                "Старший разработчик (backend)\n" + "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
+        ArrayList<Position> position2 = new ArrayList<>();
+        position2.add(new Position(LocalDate.of(2014, 10, 1), LocalDate.of(2016, 1, 1),
+                "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
+        experienceList.add(new Organization("Wrike", "https://www.wrike.com/", position2));
         resume.addSection(EXPERIENCE, new OrganizationSection(experienceList));
 
-        List<Position> educationList = new ArrayList();
-        educationList.add(new Position("Coursera", "https://www.coursera.org/course/progfun", LocalDate.of(2013, 3, 1), LocalDate.of(2013, 5, 1),
-                "\"Functional Programming Principles in Scala\" by Martin Odersky"));
-        educationList.add(new Position("Luxoft", "https://www.coursera.org/course/progfun", LocalDate.of(2011, 3, 1), LocalDate.of(2011, 4, 1),
-                "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""));
+        List<Organization> educationList = new ArrayList<>();
+        ArrayList<Position> position3 = new ArrayList<>();
+        position3.add(new Position(LocalDate.of(2013, 3, 1), LocalDate.of(2013, 5, 1),
+                "\"Functional Programming Principles in Scala\" by Martin Odersky", null));
+        educationList.add(new Organization("Coursera", "https://www.coursera.org/course/progfun", position3));
+        ArrayList<Position> position4 = new ArrayList<>();
+        position4.add(new Position(LocalDate.of(2011, 3, 1), LocalDate.of(2011, 4, 1),
+                "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null));
+        educationList.add(new Organization("Luxoft", "https://www.coursera.org/course/progfun", position4));
         resume.addSection(EDUCATION, new OrganizationSection(educationList));
 
+        ArrayList<Position> positions = new ArrayList<>();
+        positions.add(new Position(LocalDate.of(1993, 9, 1), LocalDate.of(1996, 7, 1), "Аспирантура (программист С, С++)", null));
+        positions.add(new Position(LocalDate.of(1987, 9, 1), LocalDate.of(1993, 7, 1), "Инженер (программист Fortran, C)", null));
+        educationList.add(new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/", positions));
+
+        for (ContactType type : resume.contacts.keySet()) {
+            System.out.println(type.getTitle() + ": " + resume.getContact(type));
+        }
+
         AbstractSection section;
-        Position position;
-        for (SectionType type : resume.content.keySet()) {
+        Organization organization;
+        for (SectionType type : resume.sections.keySet()) {
             switch (type) {
                 case PERSONAL:
                 case OBJECTIVE:
@@ -97,10 +109,14 @@ public class ResumeTestData {
                         System.out.println("Empty");
                     } else {
                         for (int i = 0; i < ((OrganizationSection) section).getOrganizationList().size(); i++) {
-                            position = ((OrganizationSection) section).getOrganizationList().get(i);
-                            System.out.println(position.getDateBegin() + " - " + position.getDateEnd());
-                            System.out.println(position.getHeader() + " " + position.getLink());
-                            System.out.println(position.getText());
+                            organization = ((OrganizationSection) section).getOrganizationList().get(i);
+                            System.out.println(organization.getHomePage());
+                            for (int j = 0; j < organization.getPositions().size(); j++) {
+                                System.out.println(organization.getPositions().get(j).getDateBegin() + " - " + organization.getPositions().get(j).getDateEnd() + " " + organization.getPositions().get(j).getTitle());
+                                if (organization.getPositions().get(j).getDescription() != null) {
+                                    System.out.println(organization.getPositions().get(j).getDescription());
+                                }
+                            }
                         }
                     }
                     break;

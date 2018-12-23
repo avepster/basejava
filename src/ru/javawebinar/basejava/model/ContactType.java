@@ -4,12 +4,12 @@ public enum ContactType {
     PHONE("Телефон"),
     SKYPE("Skype"),
     EMAIL("Почта"),
-    PROFILE_LINKEDIN("Профиль LinkedIn"),
-    PROFILE_GITHUB("Профиль GitHub"),
-    PROFILE_STACKOVERFLOW("Профиль Stackoverflow"),
+    LINKEDIN("Профиль LinkedIn"),
+    GITHUB("Профиль GitHub"),
+    STACKOVERFLOW("Профиль Stackoverflow"),
     HOMEPAGE("Домашняя страница");
 
-    private String title;
+    private final String title;
 
     ContactType(String title) {
         this.title = title;
