@@ -1,9 +1,10 @@
 package ru.javawebinar.basejava.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Organization {
+public class Organization implements Serializable {
     private final Link homePage;
     private final ArrayList<Position> positions;
 

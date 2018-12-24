@@ -10,9 +10,10 @@ import java.util.List;
 import static ru.javawebinar.basejava.model.SectionType.*;
 
 public class ResumeTestData {
-    static Resume resume = new Resume("Григорий Кислин");
+    public static Resume resume;
 
-    public static void main(String[] args) {
+    public ResumeTestData() {
+        resume = new Resume("Григорий Кислин");
         resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
         resume.addContact(ContactType.SKYPE, "grigory.kislin");
         resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
@@ -71,6 +72,10 @@ public class ResumeTestData {
         positions.add(new Position(LocalDate.of(1993, 9, 1), LocalDate.of(1996, 7, 1), "Аспирантура (программист С, С++)", null));
         positions.add(new Position(LocalDate.of(1987, 9, 1), LocalDate.of(1993, 7, 1), "Инженер (программист Fortran, C)", null));
         educationList.add(new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/", positions));
+    }
+
+    public static void main(String[] args) {
+        ResumeTestData rtd = new ResumeTestData();
 
         for (ContactType type : resume.contacts.keySet()) {
             System.out.println(type.getTitle() + ": " + resume.getContact(type));
