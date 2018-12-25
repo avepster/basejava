@@ -25,11 +25,15 @@ public class AbstractStorageTest {
 
     // Static block initialization (if some hard init)
     static {
-        ResumeTestData rtd = new ResumeTestData();
-        RESUME_1 = new Resume(UUID_1, "Иванов Иван Иванович");
-        RESUME_2 = new Resume(UUID_2, "Сидоров Тимофей Николаевич");
-        RESUME_3 = rtd.resume; //new Resume(UUID_3, "Петров Петр Петрович");
-        RESUME_4 = new Resume(UUID_4, "Никифоров Андрей Андреевич");
+        ResumeTestData rtd1 = new ResumeTestData(UUID_1, "Иванов Иван Иванович");
+        ResumeTestData rtd2 = new ResumeTestData(UUID_2, "Сидоров Тимофей Николаевич");
+        ResumeTestData rtd3 = new ResumeTestData(UUID_3, "Петров Петр Петрович");
+        ResumeTestData rtd4 = new ResumeTestData(UUID_4, "Никифоров Андрей Андреевич");
+
+        RESUME_1 = rtd1.resume;
+        RESUME_2 = rtd2.resume;
+        RESUME_3 = rtd3.resume;
+        RESUME_4 = rtd4.resume;
     }
 
     protected Storage storage;
@@ -41,9 +45,9 @@ public class AbstractStorageTest {
     @Before
     public void setUp() {
         storage.clear();
-        storage.save(RESUME_3);
         storage.save(RESUME_1);
         storage.save(RESUME_2);
+        storage.save(RESUME_3);
     }
 
     @Test
@@ -60,7 +64,8 @@ public class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume resume = new Resume(UUID_1, "Новиков Николай Николаевич");
+        ResumeTestData rtd = new ResumeTestData(UUID_1, "Новиков Николай Николаевич");
+        Resume resume = rtd.resume;
         storage.update(resume);
         assertGet(resume);
     }

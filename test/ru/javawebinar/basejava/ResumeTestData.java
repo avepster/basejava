@@ -6,14 +6,19 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static ru.javawebinar.basejava.model.SectionType.*;
 
 public class ResumeTestData {
-    public static Resume resume;
+    public Resume resume;
+
+    public ResumeTestData(String uuid, String fullName) {
+        resume = new Resume(uuid, fullName);
+    }
 
     public ResumeTestData() {
-        resume = new Resume("Григорий Кислин");
+        this(UUID.randomUUID().toString(), "Григорий Кислин");
         resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
         resume.addContact(ContactType.SKYPE, "grigory.kislin");
         resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
@@ -77,24 +82,24 @@ public class ResumeTestData {
     public static void main(String[] args) {
         ResumeTestData rtd = new ResumeTestData();
 
-        for (ContactType type : resume.contacts.keySet()) {
-            System.out.println(type.getTitle() + ": " + resume.getContact(type));
+        for (ContactType type : rtd.resume.contacts.keySet()) {
+            System.out.println(type.getTitle() + ": " + rtd.resume.getContact(type));
         }
 
         AbstractSection section;
         Organization organization;
-        for (SectionType type : resume.sections.keySet()) {
+        for (SectionType type : rtd.resume.sections.keySet()) {
             switch (type) {
                 case PERSONAL:
                 case OBJECTIVE:
-                    section = resume.getSection(type);
+                    section = rtd.resume.getSection(type);
                     System.out.println("");
                     System.out.println(type.getTitle() + ":");
                     System.out.println(((TextSection) section).getText());
                     break;
                 case ACHIEVEMENT:
                 case QUALIFICATIONS:
-                    section = resume.getSection(type);
+                    section = rtd.resume.getSection(type);
                     System.out.println("");
                     System.out.println(type.getTitle() + ":");
                     if (((ListSection) section).getList().size() == 0) {
@@ -107,7 +112,7 @@ public class ResumeTestData {
                     break;
                 case EXPERIENCE:
                 case EDUCATION:
-                    section = resume.getSection(type);
+                    section = rtd.resume.getSection(type);
                     System.out.println("");
                     System.out.println(type.getTitle() + ":");
                     if (((OrganizationSection) section).getOrganizationList().size() == 0) {

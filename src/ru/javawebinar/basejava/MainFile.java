@@ -6,29 +6,22 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class MainFile {
-    private static String startPath = "C:/Work/SourceGit/JavaOPs/basejava/src";
 
     public static void listingFS(String path) {
         Objects.requireNonNull(path, "path must not be null");
         File file = new File(path);
-        if (file.isFile()) {
-            try {
-                System.out.println(file.getCanonicalPath());
-            } catch (IOException e) {
-                throw new RuntimeException("Error", e);
-            }
-        } else {
-            try {
-                System.out.println(file.getCanonicalPath());
-            } catch (IOException e) {
-                throw new RuntimeException("Error", e);
-            }
-            String[] list = file.list();
-            if (list != null) {
-                for (String name : list) {
-                    listingFS(path + "/" + name);
+        try {
+            System.out.println(file.getCanonicalPath());
+            if (file.isDirectory()) {
+                String[] list = file.list();
+                if (list != null) {
+                    for (String name : list) {
+                        listingFS(path + "/" + name);
+                    }
                 }
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -72,7 +65,7 @@ public class MainFile {
             throw new RuntimeException(e);
         }
 
-        listingFS(startPath);
+        listingFS("./src");
     }
 
 }

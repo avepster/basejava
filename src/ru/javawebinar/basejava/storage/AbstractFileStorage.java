@@ -53,7 +53,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected void doDelete(File file) {
-        file.delete();
+        if (!file.delete()) {
+            throw new StorageException("Can not delete file", file.getName());
+        }
     }
 
     @Override
@@ -68,6 +70,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> getAll() {
         File[] fileList = directory.listFiles();
+        if (fileList == null) {
+            throw new IllegalArgumentException(directory.getAbsolutePath() + " is empty");
+        }
         List<Resume> resumeList = new ArrayList<>();
         for (int i = 0; i < fileList.length; i++) {
             resumeList.add(doGet(fileList[i]));
@@ -83,9 +88,14 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     public void clear() {
         File[] fileList = directory.listFiles();
+        if (fileList == null) {
+            throw new IllegalArgumentException(directory.getAbsolutePath() + " is empty");
+        }
         for (int i = 0; i < fileList.length; i++) {
             if (fileList[i].isFile()) {
-                fileList[i].delete();
+                if (!fileList[i].delete()) {
+                    throw new StorageException("Can not delete file", fileList[i].getName());
+                }
             }
         }
 
@@ -93,13 +103,6 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-        int cntFiles = 0;
-        File[] fileList = directory.listFiles();
-        for (int i = 0; i < fileList.length; i++) {
-            if (fileList[i].isFile()) {
-                cntFiles++;
-            }
-        }
-        return cntFiles;
+        return Objects.requireNonNull(directory.list(), directory.getAbsolutePath() + " is empty").length;
     }
 }
