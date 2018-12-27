@@ -22,7 +22,7 @@ public class FileStorage extends AbstractFileStorage {
     }
 
     @Override
-    protected void doWrite(Resume resume, File file) {
+    protected void doWrite(File file, Resume resume) {
         try (FileOutputStream fos = new FileOutputStream(file); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(resume);
         } catch (IOException e) {
