@@ -6,8 +6,8 @@ import ru.javawebinar.basejava.ResumeTestData;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.*;
+import ru.javawebinar.basejava.storage.Serialize.SerializeStrategy;
 
-import java.io.File;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
@@ -16,9 +16,10 @@ import static org.junit.Assert.assertEquals;
 import static ru.javawebinar.basejava.storage.AbstractStorage.RESUME_COMPARATOR;
 
 public class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File("C:/temp/storage");
+    protected static final String STORAGE_DIR = "./storage";
 
     protected Storage storage;
+    protected SerializeStrategy strategy;
 
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
@@ -66,6 +67,12 @@ public class AbstractStorageTest {
 
     protected AbstractStorageTest(Storage newStorage) {
         this.storage = newStorage;
+        this.strategy = null;
+    }
+
+    protected AbstractStorageTest(Storage newStorage, SerializeStrategy strategy) {
+        this.storage = newStorage;
+        this.strategy = strategy;
     }
 
     @Before
