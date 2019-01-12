@@ -76,7 +76,7 @@ public class ResumeTestData {
             System.out.println(type.getTitle() + ": " + rtd.resume.getContact(type));
         }
 
-        AbstractSection section;
+        Object section;
         Organization organization;
         for (SectionType type : rtd.resume.getSections().keySet()) {
             switch (type) {

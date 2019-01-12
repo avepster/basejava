@@ -15,8 +15,8 @@ public class Resume implements Serializable {
     // Unique identifier
     private final String uuid;
     private String fullName;
-    private final Map<ContactType, String> contacts = new EnumMap(ContactType.class);
-    private final Map<SectionType, AbstractSection> sections = new EnumMap(SectionType.class);
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -61,7 +61,7 @@ public class Resume implements Serializable {
         return sections;
     }
 
-    public AbstractSection getSection(SectionType type) {
+    public Object getSection(SectionType type) {
         return sections.get(type);
     }
 
@@ -87,8 +87,7 @@ public class Resume implements Serializable {
 
         if (!uuid.equals(resume.uuid)) return false;
         if (!fullName.equals(resume.fullName)) return false;
-        if (contacts != null ? !contacts.equals(resume.contacts) : resume.contacts != null) return false;
-        return sections != null ? sections.equals(resume.sections) : resume.sections == null;
+        return (contacts != null ? contacts.equals(resume.contacts) : resume.contacts == null) && (sections != null ? sections.equals(resume.sections) : resume.sections == null);
     }
 
     @Override
