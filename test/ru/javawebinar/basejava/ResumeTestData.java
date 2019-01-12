@@ -72,14 +72,13 @@ public class ResumeTestData {
 
     public static void main(String[] args) {
         ResumeTestData rtd = new ResumeTestData(UUID.randomUUID().toString(), "Григорий Кислин");
-
-        for (ContactType type : rtd.resume.contacts.keySet()) {
+        for (ContactType type : rtd.resume.getContacts().keySet()) {
             System.out.println(type.getTitle() + ": " + rtd.resume.getContact(type));
         }
 
         AbstractSection section;
         Organization organization;
-        for (SectionType type : rtd.resume.sections.keySet()) {
+        for (SectionType type : rtd.resume.getSections().keySet()) {
             switch (type) {
                 case PERSONAL:
                 case OBJECTIVE:

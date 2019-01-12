@@ -7,6 +7,6 @@ public class ObjectStreamBinaryPathStorageTest extends AbstractStorageTest {
     private static SerializeStrategy strategy = new SerializeStrategyBinary();
 
     public ObjectStreamBinaryPathStorageTest() {
-        super(new ObjectStreamBinaryPathStorage(STORAGE_DIR, strategy));
+        super(new PathStorage(STORAGE_DIR, strategy));
     }
 }

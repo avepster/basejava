@@ -3,15 +3,15 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Map based storage for Resumes
  */
 public class MapUuidStorage extends AbstractStorage<String> {
-    protected Map<String, Resume> storage = new TreeMap<>();
+    protected Map<String, Resume> storage = new HashMap<>();
 
     @Override
     protected String getSearchKey(String uuid) {
