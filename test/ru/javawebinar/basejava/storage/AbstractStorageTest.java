@@ -6,7 +6,6 @@ import ru.javawebinar.basejava.ResumeTestData;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.*;
-import ru.javawebinar.basejava.storage.Serialize.SerializeStrategy;
 
 import java.time.Month;
 import java.util.Arrays;
@@ -19,7 +18,6 @@ public class AbstractStorageTest {
     protected static final String STORAGE_DIR = "./storage";
 
     protected Storage storage;
-    protected SerializeStrategy strategy;
 
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
@@ -56,7 +54,7 @@ public class AbstractStorageTest {
                 new Organization("Institute", null,
                         new Organization.Position(1996, Month.JANUARY, 2000, Month.DECEMBER, "aspirant", null),
                         new Organization.Position(2001, Month.MARCH, 2005, Month.JANUARY, "student", "IT faculity")),
-                new Organization("Organization12", "http://organization2.ru")));
+                new Organization("Organization12", "http://organization2.ru", new Organization.Position())));
 
         R2.addContact(ContactType.SKYPE, "skype2");
         R2.addContact(ContactType.PHONE, "22222");
@@ -67,12 +65,6 @@ public class AbstractStorageTest {
 
     protected AbstractStorageTest(Storage newStorage) {
         this.storage = newStorage;
-        this.strategy = null;
-    }
-
-    protected AbstractStorageTest(Storage newStorage, SerializeStrategy strategy) {
-        this.storage = newStorage;
-        this.strategy = strategy;
     }
 
     @Before

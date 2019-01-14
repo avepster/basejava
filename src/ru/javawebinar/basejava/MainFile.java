@@ -12,9 +12,9 @@ public class MainFile {
         File file = new File(path);
         try {
             if (file.isFile()) {
-                System.out.print(level + "File: ");
+                System.out.print(level + "F: ");
             } else {
-                System.out.print(level + "Directory: ");
+                System.out.print(level + "D: ");
             }
             System.out.println(file.getCanonicalPath());
             if (file.isDirectory()) {
@@ -36,10 +36,10 @@ public class MainFile {
         if (files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    System.out.println(level + "File: " + file.getName());
+                    System.out.println(level + "F: " + file.getName());
                 } else if (file.isDirectory()) {
-                    System.out.println(level + "Directory: " + file.getName());
-                    printDirectoryDeeply(file, level + " ");
+                    System.out.println(level + "D: " + file.getName());
+                    printDirectoryDeeply(file, level + "  ");
                 }
             }
         }
