@@ -1,14 +1,11 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.storage.Serialize.SerializeStrategy;
 import ru.javawebinar.basejava.storage.Serialize.SerializeStrategyBinary;
 
 import java.io.File;
 
 public class ObjectStreamBinaryFileStorageTest extends AbstractStorageTest {
-    private static SerializeStrategy strategy = new SerializeStrategyBinary();
-
     public ObjectStreamBinaryFileStorageTest() {
-        super(new FileStorage(new File(STORAGE_DIR), strategy));
+        super(new FileStorage(new File(STORAGE_DIR), new SerializeStrategyBinary()));
     }
 }
