@@ -42,7 +42,7 @@ public class AbstractStorageTest {
 
         R1.addContact(ContactType.EMAIL, "mail@ya.ru");
         R1.addContact(ContactType.PHONE, "11111");
-        R1.addSection(SectionType.OBJECTIVE, new TextSection("Objetive1"));
+        R1.addSection(SectionType.OBJECTIVE, new TextSection("Objective1"));
         R1.addSection(SectionType.PERSONAL, new TextSection("Personal1"));
         R1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achievement1", "Achievement2", "Achievement3"));
         R1.addSection(SectionType.QUALIFICATIONS, new ListSection("Java", "SQL", "JavaScript"));
@@ -54,7 +54,8 @@ public class AbstractStorageTest {
                 new Organization("Institute", null,
                         new Organization.Position(1996, Month.JANUARY, 2000, Month.DECEMBER, "aspirant", null),
                         new Organization.Position(2001, Month.MARCH, 2005, Month.JANUARY, "student", "IT faculity")),
-                new Organization("Organization12", "http://organization2.ru", new Organization.Position())));
+                new Organization("Organization12", "http://organization2.ru",
+                        new Organization.Position(2003, Month.JANUARY, 2004, Month.DECEMBER, "xxxx", null))));
 
         R2.addContact(ContactType.SKYPE, "skype2");
         R2.addContact(ContactType.PHONE, "22222");
