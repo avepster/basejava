@@ -5,68 +5,51 @@ import ru.javawebinar.basejava.model.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-
 public class DataStreamSerializer implements StreamSerializer {
+
+    void writeContacts(Collection collection, DataOutputStream dos, CollectionWriter c) throws IOException {
+        c.write(collection, dos);
+    }
+
+    void writeList(List list, DataOutputStream dos, CollectionWriter c) throws IOException {
+        c.write(list, dos);
+    }
+
+    private void organizationWriter(Collection collection, DataOutputStream dos, CollectionWriter c) throws IOException {
+        c.write(collection, dos);
+    }
+
     @Override
     public void doWrite(OutputStream os, Resume resume) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
-            Map<ContactType, String> contacts = resume.getContacts();
-            dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+            writeContacts(resume.getContacts().entrySet(), dos, new ContactsWriter());
             // TODO implements section
             Map<SectionType, AbstractSection> sections = resume.getSections();
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
+                String mapKey = entry.getKey().toString();
                 switch (entry.getKey()) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        dos.writeUTF(entry.getKey().toString());
+                        dos.writeUTF(mapKey);
                         dos.writeUTF(entry.getValue().toString());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        dos.writeUTF(entry.getKey().toString());
-                        int sizeList = ((ListSection) entry.getValue()).getList().size();
-                        dos.writeInt(sizeList);
-                        for (int i = 0; i < sizeList; i++) {
-                            dos.writeUTF(((ListSection) entry.getValue()).getList().get(i));
-                        }
+                        dos.writeUTF(mapKey);
+                        List list = ((ListSection) entry.getValue()).getList();
+                        writeList(list, dos, new ListWriter());
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        dos.writeUTF(entry.getKey().toString());
-                        OrganizationSection orgSection = (OrganizationSection) entry.getValue();
-                        int sizeOrgs = orgSection.getOrganizationList().size();
-                        dos.writeInt(sizeOrgs);
-                        Organization org;
-                        for (int i = 0; i < sizeOrgs; i++) {
-                            org = orgSection.getOrganizationList().get(i);
-                            dos.writeUTF(org.getHomePage().getName());
-                            if (org.getHomePage().getUrl() == null) {
-                                dos.writeUTF("-=xXx=-");
-                            } else {
-                                dos.writeUTF(org.getHomePage().getUrl());
-                            }
-                            dos.writeInt(org.getPositions().size());
-                            for (int j = 0; j < org.getPositions().size(); j++) {
-                                dos.writeUTF(org.getPositions().get(j).getStartDate().toString());
-                                dos.writeUTF(org.getPositions().get(j).getEndDate().toString());
-                                dos.writeUTF(org.getPositions().get(j).getTitle());
-                                if (org.getPositions().get(j).getDescription() == null) {
-                                    dos.writeUTF("-=xXx=-");
-                                } else {
-                                    dos.writeUTF(org.getPositions().get(j).getDescription());
-                                }
-                            }
-                        }
+                        dos.writeUTF(mapKey);
+                        organizationWriter(((OrganizationSection) entry.getValue()).getOrganizationList(), dos, new OrganizatiosWriter());
                         break;
                 }
             }
@@ -94,7 +77,7 @@ public class DataStreamSerializer implements StreamSerializer {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        List list = new ArrayList();
+                        List list = new ArrayList<>();
                         int sizeList = dis.readInt();
                         for (int l = 0; l < sizeList; l++) {
                             list.add(dis.readUTF());
@@ -111,7 +94,7 @@ public class DataStreamSerializer implements StreamSerializer {
                         for (int j = 0; j < sizeOrgList; j++) {
                             name = dis.readUTF();
                             url = dis.readUTF();
-                            if (url.equals("-=xXx=-")) {
+                            if (url.equals("")) {
                                 link = new Link(name, null);
                             } else {
                                 link = new Link(name, url);
@@ -127,7 +110,7 @@ public class DataStreamSerializer implements StreamSerializer {
                                 endDate = LocalDate.parse(dis.readUTF());
                                 title = dis.readUTF();
                                 description = dis.readUTF();
-                                if (description.equals("-=xXx=-")) {
+                                if (description.equals("")) {
                                     positions.add(new Organization.Position(startDate, endDate, title, null));
                                 } else {
                                     positions.add(new Organization.Position(startDate, endDate, title, description));
