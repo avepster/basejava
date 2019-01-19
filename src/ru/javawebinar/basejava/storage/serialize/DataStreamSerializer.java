@@ -11,16 +11,11 @@ import java.util.Map;
 
 public class DataStreamSerializer implements StreamSerializer {
 
-    void writeContacts(Collection collection, DataOutputStream dos, CollectionWriter c) throws IOException {
-        c.write(collection, dos);
-    }
-
-    void writeList(List list, DataOutputStream dos, CollectionWriter c) throws IOException {
-        c.write(list, dos);
-    }
-
-    private void organizationWriter(Collection collection, DataOutputStream dos, CollectionWriter c) throws IOException {
-        c.write(collection, dos);
+    private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, ElementWriter<T> elementWriter) throws IOException {
+        dos.writeInt(collection.size());
+        for (T element : collection) {
+            elementWriter.accept(element);
+        }
     }
 
     @Override
@@ -28,31 +23,55 @@ public class DataStreamSerializer implements StreamSerializer {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
-            writeContacts(resume.getContacts().entrySet(), dos, new ContactsWriter());
+            Map<ContactType, String> contacts = resume.getContacts();
+            writeWithException(contacts.entrySet(), dos, element -> {
+                dos.writeUTF(element.getKey().name());
+                dos.writeUTF(element.getValue());
+            });
             // TODO implements section
             Map<SectionType, AbstractSection> sections = resume.getSections();
-            dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
-                String mapKey = entry.getKey().toString();
-                switch (entry.getKey()) {
+            writeWithException(sections.entrySet(), dos, element -> {
+                SectionType sectionType = element.getKey();
+                AbstractSection sectionValue = element.getValue();
+                dos.writeUTF(sectionType.name());
+                switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        dos.writeUTF(mapKey);
-                        dos.writeUTF(entry.getValue().toString());
+                        dos.writeUTF(((TextSection) sectionValue).getText());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        dos.writeUTF(mapKey);
-                        List list = ((ListSection) entry.getValue()).getList();
-                        writeList(list, dos, new ListWriter());
+                        List<String> list = ((ListSection) sectionValue).getList();
+                        writeWithException(list, dos, str -> dos.writeUTF(str));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        dos.writeUTF(mapKey);
-                        organizationWriter(((OrganizationSection) entry.getValue()).getOrganizationList(), dos, new OrganizatiosWriter());
+                        List<Organization> organizations = ((OrganizationSection) sectionValue).getOrganizationList();
+                        writeWithException(organizations, dos, organization -> {
+                            dos.writeUTF(organization.getHomePage().getName());
+                            String url = organization.getHomePage().getUrl();
+                            if (url == null) {
+                                dos.writeUTF("");
+                            } else {
+                                dos.writeUTF(url);
+                            }
+                            List<Organization.Position> positions = organization.getPositions();
+                            writeWithException(positions, dos, position -> {
+                                dos.writeUTF(position.getStartDate().toString());
+                                dos.writeUTF(position.getEndDate().toString());
+                                dos.writeUTF(position.getTitle());
+                                String description = position.getDescription();
+                                if (description == null) {
+                                   dos.writeUTF("");
+                                } else {
+                                    dos.writeUTF(description);
+                                }
+                            });
+
+                        });
                         break;
                 }
-            }
+            });
         }
     }
 
