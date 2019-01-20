@@ -42,7 +42,7 @@ public class DataStreamSerializer implements StreamSerializer {
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         List<String> list = ((ListSection) sectionValue).getList();
-                        writeWithException(list, dos, str -> dos.writeUTF(str));
+                        writeWithException(list, dos, dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
@@ -50,22 +50,14 @@ public class DataStreamSerializer implements StreamSerializer {
                         writeWithException(organizations, dos, organization -> {
                             dos.writeUTF(organization.getHomePage().getName());
                             String url = organization.getHomePage().getUrl();
-                            if (url == null) {
-                                dos.writeUTF("");
-                            } else {
-                                dos.writeUTF(url);
-                            }
+                            dos.writeUTF(url == null ? "" : url);
                             List<Organization.Position> positions = organization.getPositions();
                             writeWithException(positions, dos, position -> {
                                 dos.writeUTF(position.getStartDate().toString());
                                 dos.writeUTF(position.getEndDate().toString());
                                 dos.writeUTF(position.getTitle());
                                 String description = position.getDescription();
-                                if (description == null) {
-                                   dos.writeUTF("");
-                                } else {
-                                    dos.writeUTF(description);
-                                }
+                                dos.writeUTF(description == null ? "" : description);
                             });
 
                         });
