@@ -29,6 +29,10 @@ public class Organization implements Serializable {
         this(new Link(name, url), Arrays.asList(positions));
     }
 
+    public Organization(String name, String url, List<Position> positions) {
+        this(new Link(name, url), positions);
+    }
+
     public Organization(Link homePage, List<Position> positions) {
         Objects.requireNonNull(positions, "positions must not be null");
         this.homePage = homePage;

@@ -58,15 +58,15 @@ public class ResumeTestData {
         List<Organization> educationList = new ArrayList<>();
         educationList.add(new Organization("Coursera", "https://www.coursera.org/course/progfun",
                 new Organization.Position(2013, Month.MARCH, 2013, Month.MAY,
-                        "\"Functional Programming Principles in Scala\" by Martin Odersky", null)));
+                        "\"Functional Programming Principles in Scala\" by Martin Odersky", " ")));
         educationList.add(new Organization("Luxoft", "https://www.coursera.org/course/progfun",
                 new Organization.Position(2011, Month.MARCH, 2011, Month.APRIL,
-                        "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", null)));
+                        "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", " ")));
         resume.addSection(EDUCATION, new OrganizationSection(educationList));
 
         educationList.add(new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/",
-                new Organization.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Аспирантура (программист С, С++)", null),
-                new Organization.Position(1987, Month.SEPTEMBER, 1993, Month.JULY, "Инженер (программист Fortran, C)", null)
+                new Organization.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Аспирантура (программист С, С++)", " "),
+                new Organization.Position(1987, Month.SEPTEMBER, 1993, Month.JULY, "Инженер (программист Fortran, C)", " ")
         ));
     }
 

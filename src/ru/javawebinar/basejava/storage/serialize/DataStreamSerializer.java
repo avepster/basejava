@@ -4,7 +4,6 @@ import ru.javawebinar.basejava.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,22 @@ public class DataStreamSerializer implements StreamSerializer {
         dos.writeInt(collection.size());
         for (T element : collection) {
             elementWriter.accept(element);
+        }
+    }
+
+    private <T> Collection<T> readWithException(DataInputStream dis, ElementReader<T> elementReader) throws IOException {
+        int size = dis.readInt();
+        Collection<T> collection = null;
+        for (int i = 0; i < size; i++) {
+            collection.add(elementReader.get());
+        }
+        return collection;
+    }
+
+    private void readMapWithException(DataInputStream dis, MapReader mapReader) throws IOException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            mapReader.getMap();
         }
     }
 
@@ -67,72 +82,75 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
+    private AbstractSection readSectionWithException(SectionType sectionType, DataInputStream dis) throws IOException {
+        switch (sectionType) {
+            case PERSONAL:
+            case OBJECTIVE:
+                return new TextSection(dis.readUTF());
+            case ACHIEVEMENT:
+            case QUALIFICATIONS:
+                return new ListSection((List<String>) readWithException(dis, dis::readUTF));
+            case EXPERIENCE:
+            case EDUCATION:
+                return new OrganizationSection((List<Organization>) readWithException(dis, () -> new Organization(
+                                dis.readUTF(), dis.readUTF(),
+                                (List<Organization.Position>) readWithException(dis, () ->
+                                        new Organization.Position(
+                                                LocalDate.parse(dis.readUTF()),
+                                                LocalDate.parse(dis.readUTF()),
+                                                dis.readUTF(),
+                                                dis.readUTF()
+                                        )
+                                )
+                        )
+                )
+                );
+        default:
+            return null;
+        }
+    }
+
     @Override
     public Resume doRead(InputStream is) throws IOException {
         try (DataInputStream dis = new DataInputStream(is)) {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
-                resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
-            size = dis.readInt();
-            SectionType sectionType;
-            for (int i = 0; i < size; i++) {
-                sectionType = SectionType.valueOf(dis.readUTF());
-                switch (sectionType) {
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        resume.addSection(sectionType, new TextSection(dis.readUTF()));
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        List list = new ArrayList<>();
-                        int sizeList = dis.readInt();
-                        for (int l = 0; l < sizeList; l++) {
-                            list.add(dis.readUTF());
-                        }
-                        resume.addSection(sectionType, new ListSection(list));
-                        break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        List<Organization> listOrganizations = new ArrayList<>();
-                        String name;
-                        String url;
-                        Link link;
-                        int sizeOrgList = dis.readInt();
-                        for (int j = 0; j < sizeOrgList; j++) {
-                            name = dis.readUTF();
-                            url = dis.readUTF();
-                            if (url.equals("")) {
-                                link = new Link(name, null);
-                            } else {
-                                link = new Link(name, url);
-                            }
-                            int sizePositions = dis.readInt();
-                            List<Organization.Position> positions = new ArrayList<>();
-                            LocalDate startDate;
-                            LocalDate endDate;
-                            String title;
-                            String description;
-                            for (int k = 0; k < sizePositions; k++) {
-                                startDate = LocalDate.parse(dis.readUTF());
-                                endDate = LocalDate.parse(dis.readUTF());
-                                title = dis.readUTF();
-                                description = dis.readUTF();
-                                if (description.equals("")) {
-                                    positions.add(new Organization.Position(startDate, endDate, title, null));
-                                } else {
-                                    positions.add(new Organization.Position(startDate, endDate, title, description));
-                                }
-                            }
-                            listOrganizations.add(new Organization(link, positions));
-                        }
-                        resume.addSection(sectionType, new OrganizationSection(listOrganizations));
-                        break;
-                }
-            }
+
+            readMapWithException(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readMapWithException(dis, () -> {
+                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+                resume.addSection(sectionType, readSectionWithException(sectionType, dis)
+                        /*() -> {
+                    switch (sectionType) {
+                        case PERSONAL:
+                        case OBJECTIVE:
+                            new TextSection(dis.readUTF());
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            new ListSection((List<String>) readWithException(dis, dis::readUTF));
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            new OrganizationSection((List<Organization>) readWithException(dis, () -> new Organization(
+                                            dis.readUTF(), dis.readUTF(),
+                                            (List<Organization.Position>) readWithException(dis, () ->
+                                                     new Organization.Position(
+                                                            LocalDate.parse(dis.readUTF()),
+                                                            LocalDate.parse(dis.readUTF()),
+                                                            dis.readUTF(),
+                                                            dis.readUTF()
+                                                    )
+                                            )
+                                    )
+                            )
+                            );
+                            break;
+                    }
+                }*/
+                );
+            });
             return resume;
         }
     }
