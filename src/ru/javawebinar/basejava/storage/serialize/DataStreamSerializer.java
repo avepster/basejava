@@ -4,6 +4,7 @@ import ru.javawebinar.basejava.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class DataStreamSerializer implements StreamSerializer {
 
     private <T> Collection<T> readWithException(DataInputStream dis, ElementReader<T> elementReader) throws IOException {
         int size = dis.readInt();
-        Collection<T> collection = null;
+        Collection<T> collection = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             collection.add(elementReader.get());
         }
@@ -92,21 +93,28 @@ public class DataStreamSerializer implements StreamSerializer {
                 return new ListSection((List<String>) readWithException(dis, dis::readUTF));
             case EXPERIENCE:
             case EDUCATION:
-                return new OrganizationSection((List<Organization>) readWithException(dis, () -> new Organization(
-                                dis.readUTF(), dis.readUTF(),
-                                (List<Organization.Position>) readWithException(dis, () ->
-                                        new Organization.Position(
-                                                LocalDate.parse(dis.readUTF()),
-                                                LocalDate.parse(dis.readUTF()),
-                                                dis.readUTF(),
-                                                dis.readUTF()
-                                        )
-                                )
-                        )
+                return new OrganizationSection((List<Organization>) readWithException(dis, () -> {
+                            String name = dis.readUTF();
+                            String url = dis.readUTF();
+                            return new Organization(name, url.equals("") ? null : url,
+                                    (List<Organization.Position>) DataStreamSerializer.this.readWithException(dis, () ->
+                                            {
+                                                LocalDate startDate = LocalDate.parse(dis.readUTF());
+                                                LocalDate endDate = LocalDate.parse(dis.readUTF());
+                                                String title = dis.readUTF();
+                                                String description = dis.readUTF();
+                                                return new Organization.Position(
+                                                        startDate, endDate, title,
+                                                        description.equals("") ? null : description
+                                                );
+                                            }
+                                    )
+                            );
+                        }
                 )
                 );
-        default:
-            return null;
+            default:
+                return null;
         }
     }
 
@@ -120,36 +128,7 @@ public class DataStreamSerializer implements StreamSerializer {
             readMapWithException(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
             readMapWithException(dis, () -> {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
-                resume.addSection(sectionType, readSectionWithException(sectionType, dis)
-                        /*() -> {
-                    switch (sectionType) {
-                        case PERSONAL:
-                        case OBJECTIVE:
-                            new TextSection(dis.readUTF());
-                            break;
-                        case ACHIEVEMENT:
-                        case QUALIFICATIONS:
-                            new ListSection((List<String>) readWithException(dis, dis::readUTF));
-                            break;
-                        case EXPERIENCE:
-                        case EDUCATION:
-                            new OrganizationSection((List<Organization>) readWithException(dis, () -> new Organization(
-                                            dis.readUTF(), dis.readUTF(),
-                                            (List<Organization.Position>) readWithException(dis, () ->
-                                                     new Organization.Position(
-                                                            LocalDate.parse(dis.readUTF()),
-                                                            LocalDate.parse(dis.readUTF()),
-                                                            dis.readUTF(),
-                                                            dis.readUTF()
-                                                    )
-                                            )
-                                    )
-                            )
-                            );
-                            break;
-                    }
-                }*/
-                );
+                resume.addSection(sectionType, readSectionWithException(sectionType, dis));
             });
             return resume;
         }
