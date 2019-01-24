@@ -44,7 +44,6 @@ public class DataStreamSerializer implements StreamSerializer {
                 dos.writeUTF(element.getKey().name());
                 dos.writeUTF(element.getValue());
             });
-            // TODO implements section
             Map<SectionType, AbstractSection> sections = resume.getSections();
             writeWithException(sections.entrySet(), dos, element -> {
                 SectionType sectionType = element.getKey();
