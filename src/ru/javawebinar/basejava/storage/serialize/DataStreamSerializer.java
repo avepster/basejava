@@ -18,19 +18,19 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private <T> Collection<T> readWithException(DataInputStream dis, ElementReader<T> elementReader) throws IOException {
+    private <T> List<T> readWithException(DataInputStream dis, ElementReader<T> elementReader) throws IOException {
         int size = dis.readInt();
-        Collection<T> collection = new ArrayList<>(size);
+        List<T> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            collection.add(elementReader.get());
+            list.add(elementReader.get());
         }
-        return collection;
+        return list;
     }
 
-    private void readMapWithException(DataInputStream dis, MapReader mapReader) throws IOException {
+    private void setWithException(DataInputStream dis, Setter setter) throws IOException {
         int size = dis.readInt();
         for (int i = 0; i < size; i++) {
-            mapReader.getMap();
+            setter.set();
         }
     }
 
@@ -90,14 +90,14 @@ public class DataStreamSerializer implements StreamSerializer {
                 return new TextSection(dis.readUTF());
             case ACHIEVEMENT:
             case QUALIFICATIONS:
-                return new ListSection((List<String>) readWithException(dis, dis::readUTF));
+                return new ListSection(readWithException(dis, dis::readUTF));
             case EXPERIENCE:
             case EDUCATION:
-                return new OrganizationSection((List<Organization>) readWithException(dis, () -> {
+                return new OrganizationSection(readWithException(dis, () -> {
                             String name = dis.readUTF();
                             String url = dis.readUTF();
                             return new Organization(name, url.equals("") ? null : url,
-                                    (List<Organization.Position>) DataStreamSerializer.this.readWithException(dis, () ->
+                                    DataStreamSerializer.this.readWithException(dis, () ->
                                             {
                                                 LocalDate startDate = LocalDate.parse(dis.readUTF());
                                                 LocalDate endDate = LocalDate.parse(dis.readUTF());
@@ -125,12 +125,27 @@ public class DataStreamSerializer implements StreamSerializer {
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
 
-            readMapWithException(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
-            readMapWithException(dis, () -> {
+            setWithException(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            setWithException(dis, () -> {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 resume.addSection(sectionType, readSectionWithException(sectionType, dis));
             });
             return resume;
         }
+    }
+
+    @FunctionalInterface
+    private interface ElementWriter<T> {
+        void accept(T element) throws IOException;
+    }
+
+    @FunctionalInterface
+    private interface ElementReader<T> {
+        T get() throws IOException;
+    }
+
+    @FunctionalInterface
+    private interface Setter {
+        void set() throws IOException;
     }
 }
