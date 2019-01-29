@@ -6,42 +6,34 @@ public class MainDeadlock {
         String str2 = "str2";
 
         Thread thread1 = new Thread("My Thread 1") {
+            @Override
             public void run() {
-                while (true) {
-                    synchronized (str1) {
-                        System.out.println("Thread 1: locked str1");
-                        try {
-                            Thread.sleep(100);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        synchronized (str2) {
-                            System.out.println("Thread 1: locked str2");
-                        }
-                    }
-                }
+                doLock(getName(), str1, str2);
             }
         };
 
         Thread thread2 = new Thread("My Thread 2") {
+            @Override
             public void run() {
-                while (true) {
-                    synchronized (str2) {
-                        System.out.println("Thread 2: locked str2");
-                        try {
-                            Thread.sleep(100);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        synchronized (str1) {
-                            System.out.println("Thread 1: locked str1");
-                        }
-                    }
-                }
+                doLock(getName(), str2, str1);
             }
         };
 
         thread1.start();
         thread2.start();
+    }
+
+    private static void doLock(String threadName, String str1, String str2) {
+        synchronized (str1) {
+            System.out.println(threadName + ": locked " + str1.toString());
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            synchronized (str2) {
+                System.out.println(threadName + ":locked " + str2.toString());
+            }
+        }
     }
 }
