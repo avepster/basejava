@@ -34,6 +34,15 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
+    private void writeLocalDate(DataOutputStream dos, LocalDate ld) throws IOException {
+        dos.writeInt(ld.getYear());
+        dos.writeInt(ld.getMonth().getValue());
+    }
+
+    private LocalDate readLocalDate(DataInputStream dis) throws IOException {
+        return LocalDate.of(dis.readInt(), dis.readInt(), 1);
+    }
+
     @Override
     public void doWrite(OutputStream os, Resume resume) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
@@ -56,23 +65,18 @@ public class DataStreamSerializer implements StreamSerializer {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        List<String> list = ((ListSection) sectionValue).getList();
-                        writeWithException(list, dos, dos::writeUTF);
+                        writeWithException(((ListSection) sectionValue).getList(), dos, dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        List<Organization> organizations = ((OrganizationSection) sectionValue).getOrganizationList();
-                        writeWithException(organizations, dos, organization -> {
+                        writeWithException(((OrganizationSection) sectionValue).getOrganizationList(), dos, organization -> {
                             dos.writeUTF(organization.getHomePage().getName());
-                            String url = organization.getHomePage().getUrl();
-                            dos.writeUTF(url == null ? "" : url);
-                            List<Organization.Position> positions = organization.getPositions();
-                            writeWithException(positions, dos, position -> {
-                                dos.writeUTF(position.getStartDate().toString());
-                                dos.writeUTF(position.getEndDate().toString());
+                            dos.writeUTF(organization.getHomePage().getUrl());
+                            writeWithException(organization.getPositions(), dos, position -> {
+                                writeLocalDate(dos, position.getStartDate());
+                                writeLocalDate(dos, position.getEndDate());
                                 dos.writeUTF(position.getTitle());
-                                String description = position.getDescription();
-                                dos.writeUTF(description == null ? "" : description);
+                                dos.writeUTF(position.getDescription());
                             });
 
                         });
@@ -92,26 +96,13 @@ public class DataStreamSerializer implements StreamSerializer {
                 return new ListSection(readWithException(dis, dis::readUTF));
             case EXPERIENCE:
             case EDUCATION:
-                return new OrganizationSection(readWithException(dis, () -> {
-                            String name = dis.readUTF();
-                            String url = dis.readUTF();
-                            return new Organization(name, url.equals("") ? null : url,
-                                    DataStreamSerializer.this.readWithException(dis, () ->
-                                            {
-                                                LocalDate startDate = LocalDate.parse(dis.readUTF());
-                                                LocalDate endDate = LocalDate.parse(dis.readUTF());
-                                                String title = dis.readUTF();
-                                                String description = dis.readUTF();
-                                                return new Organization.Position(
-                                                        startDate, endDate, title,
-                                                        description.equals("") ? null : description
-                                                );
-                                            }
-                                    )
-                            );
-                        }
-                )
-                );
+                return new OrganizationSection(readWithException(dis, () -> new Organization(dis.readUTF(), dis.readUTF(),
+                        DataStreamSerializer.this.readWithException(dis, () ->
+                                new Organization.Position(
+                                        readLocalDate(dis), readLocalDate(dis), dis.readUTF(), dis.readUTF()
+                                )
+                        )
+                )));
             default:
                 return null;
         }
