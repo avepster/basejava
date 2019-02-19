@@ -5,9 +5,8 @@ import org.junit.Test;
 import ru.javawebinar.basejava.ResumeTestData;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
-import ru.javawebinar.basejava.model.*;
+import ru.javawebinar.basejava.model.Resume;
 
-import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,6 +39,7 @@ public class AbstractStorageTest {
         R3 = rtd3.resume;
         R4 = rtd4.resume;
 
+        /*
         R1.addContact(ContactType.EMAIL, "mail@ya.ru");
         R1.addContact(ContactType.PHONE, "11111");
         R1.addSection(SectionType.OBJECTIVE, new TextSection("Objective1"));
@@ -61,7 +61,7 @@ public class AbstractStorageTest {
         R2.addContact(ContactType.PHONE, "22222");
         R2.addSection(SectionType.EXPERIENCE, new OrganizationSection(
                 new Organization("Organization2", "http://organization2.ru",
-                        new Organization.Position(2015, Month.JANUARY, "position2", "content2"))));
+                        new Organization.Position(2015, Month.JANUARY, "position2", "content2"))));*/
     }
 
     protected AbstractStorageTest(Storage newStorage) {

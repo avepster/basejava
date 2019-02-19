@@ -7,28 +7,20 @@ import java.util.stream.Collectors;
 public class MainStream {
 
     private static int minValue(int[] values) {
-        int[] array = Arrays.stream(values).distinct().sorted().toArray();
-        int min = 0;
-        for (int i = 0; i < array.length; i++) {
-            min = min + array[i] * (int) Math.floor(Math.pow(10, array.length - i - 1));
-        }
-        return min;
+        return Arrays.stream(values).distinct().sorted().reduce(0, (s1, s2) -> s1 * 10 + s2);
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
-        int sum = integers.stream().reduce(0, (s1, s2) -> s1 + s2);
-        if (sum % 2 != 0) {
-            return integers.stream().filter(o -> o % 2 == 0).collect(Collectors.toList());
-        } else {
-            return integers.stream().filter(o -> o % 2 != 0).collect(Collectors.toList());
-        }
+       int sum = integers.stream().reduce(0, (s1, s2) -> s1 + s2);
+       return integers.stream().filter((sum % 2 != 0) ? o -> o % 2 == 0 : o -> o % 2 != 0)
+              .collect(Collectors.toList());
     }
 
     public static void main(String[] args) {
         int[] array = {1, 2, 3, 3, 2, 3};
         int min = minValue(array);
         System.out.println(min);
-        List<Integer> list = Arrays.asList(4, 8, 15, 16, 23, 42, 11);
+        List<Integer> list = Arrays.asList(4, 8, 15, 16, 13, 23, 42, 11);
         System.out.println(oddOrEven(list));
     }
 }
