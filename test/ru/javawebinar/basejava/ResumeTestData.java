@@ -2,19 +2,14 @@ package ru.javawebinar.basejava;
 
 import ru.javawebinar.basejava.model.*;
 
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-
-import static ru.javawebinar.basejava.model.SectionType.*;
 
 public class ResumeTestData {
     public Resume resume;
 
     public ResumeTestData(String uuid, String fullName) {
         resume = new Resume(uuid, fullName);
-        resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
+/*        resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
         resume.addContact(ContactType.SKYPE, "grigory.kislin");
         resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
         resume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
@@ -67,7 +62,7 @@ public class ResumeTestData {
         educationList.add(new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/",
                 new Organization.Position(1993, Month.SEPTEMBER, 1996, Month.JULY, "Аспирантура (программист С, С++)", null),
                 new Organization.Position(1987, Month.SEPTEMBER, 1993, Month.JULY, "Инженер (программист Fortran, C)", null)
-        ));
+        ));*/
     }
 
     public static void main(String[] args) {
