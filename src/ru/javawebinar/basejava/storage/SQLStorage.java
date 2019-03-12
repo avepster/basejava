@@ -2,17 +2,17 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
-import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.sql.SQLHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLStorage implements Storage {
-    private static SQLHelper sqlHelper;
+    private final SQLHelper sqlHelper;
 
     public SQLStorage(String dbUrl, String dbUser, String dbPassword) {
         sqlHelper = new SQLHelper(dbUrl, dbUser, dbPassword);
@@ -25,8 +25,12 @@ public class SQLStorage implements Storage {
             ps.setString(2, resume.getFullName());
             try {
                 ps.execute();
-            } catch (StorageException e) {
-                throw new ExistStorageException(resume.getUuid());
+            } catch (SQLException e) {
+                if (e.getSQLState().equals("23505")) {
+                    throw new ExistStorageException(resume.getUuid());
+                } else {
+                    throw e;
+                }
             }
             return null;
         });
@@ -62,7 +66,7 @@ public class SQLStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        return (Resume) sqlHelper.sqlExecute("SELECT * FROM resume r WHERE r.uuid = ?", ps -> {
+        return sqlHelper.sqlExecute("SELECT * FROM resume r WHERE r.uuid = ?", ps -> {
             ps.setString(1, uuid);
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
@@ -74,7 +78,7 @@ public class SQLStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return (List<Resume>) sqlHelper.sqlExecute("SELECT trim(uuid) uuid, full_name FROM resume ORDER BY full_name, uuid", ps -> {
+        return sqlHelper.sqlExecute("SELECT trim(uuid) uuid, full_name FROM resume ORDER BY full_name, uuid", ps -> {
             List<Resume> list = new ArrayList<>();
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -86,7 +90,7 @@ public class SQLStorage implements Storage {
 
     @Override
     public int size() {
-        return (int) sqlHelper.sqlExecute("SELECT count(*) FROM resume", ps -> {
+        return sqlHelper.sqlExecute("SELECT count(*) FROM resume", ps -> {
             ResultSet rs = ps.executeQuery();
             return rs.next() ? rs.getInt(1) : 0;
         });
